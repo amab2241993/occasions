@@ -1,0 +1,125 @@
+/* .dataTables_length label{
+	background-color: white;
+	padding: 0px;
+	margin: 5px;
+} */
+/* .dataTables_length label select{
+	margin-left: 20px;
+	margin-right: 20px;
+} */
+/* .dataTables_length{
+	background-color: red;
+} */
+/* .dataTables_wrapper {
+	background-color: red;
+
+} */
+/* .dt-buttons{
+	padding-top:10px;
+	padding-bottom:10px;
+	flex-wrap: wrap;
+} */
+/* .dataTables_filter{
+	background-color: red;
+} */
+.dataTables_length select{
+	background-color: white !important;
+}
+.dataTables_filter input {
+	background-color: white !important;
+}
+#profits td{
+	height: 5px !important;
+	min-height: 5px !important;
+}
+body {
+	background-color: rgba(255, 254, 254, 0.877);
+	font-size: 16px;
+	direction:rtl;
+	text-align:right;
+	margin: 0 auto !important;
+	width: 98% !important;
+}
+body h3{
+	text-align: center;
+	color: rgba(80, 75, 75, 0.87);
+	padding: 4px 0px;
+
+}
+.sitting{
+	background-color:#dcdcdc !important;
+	width: 94% !important;
+	margin: 0 auto !important;
+	padding: 10px;
+	font-size: 16px;
+}
+.sitting form{
+	margin: 0 auto;
+	font-size: 16px;
+}
+.sitting table{
+	background-color:#dcdcdc !important;
+	margin: 0 auto !important;
+	font-size: 16px !important;
+	padding: 0px !important;
+}
+.deleteBocking{
+	margin-right: 10px;
+	font-size: 20px;
+}
+.tableStyle{
+	background-color:rgba(38, 108, 110, 0.822);
+}
+/* End Main Rulez */
+/* Start Navbar style*/
+
+.navbar{
+	width: 100%;
+	margin: 0 auto;
+	direction: ltr;
+	background-color:rgba(38, 108, 110, 0.822);
+	font-weight: bolder;
+	font-size: large;
+	border-style: outset;
+	border-radius: 15px;
+}
+.navbar a{
+	color: rgba(245, 226, 202, 0.979);
+}
+.dropdown-item {
+	font-size: 16px;
+	min-height: 20px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	text-align: center;
+	color: rgba(87, 85, 85, 0.952);
+}
+.navbar-nav {
+	width: 100%;
+	direction: rtl;
+}
+.dropdown-menu a{
+	color: rgba(58, 55, 55, 0.952);
+}
+/* End Navbar style */
+.label label{
+	background-color:#dcdcdc;
+	padding-right:10px;
+}
+/* Start Login Form */
+.login {
+	text-align: start;
+    width: 300px;
+    margin: 100px auto;
+}
+.login h4 {
+	color: rgba(117, 117, 117, 0.925);
+}
+
+.login input {
+	margin-bottom: 10px;
+}
+.login .btn {
+    width: 300px;
+	background-color: rgba(63, 129, 230, 0.897);
+}
