@@ -1,5 +1,57 @@
-
-	
+<?php
+	ob_start(); // Output Buffering Start
+	session_start();
+	if (isset($_SESSION['user_name'])){
+		$pageTitle = 'bocking';
+		$getH3 = 'حجز فاتورة';
+		include '../../init.php';
+		$stmt = $con->prepare("SELECT * FROM services WHERE parent_id <=> NULL ORDER BY id ASC");
+		$stmt->execute();
+		$services = $stmt->fetchAll();
+		/* Start bocking Page */
+	?>
+	<h2>احجز موعدك</h2>
+	<form class="row g-3 needs-validation" id="bocking" novalidate>
+		<input type="hidden" value="<?php echo $_GET["date"] ?>" id="date">
+		<input type="hidden" value="<?php echo count($services) ?>" id="remember">
+		<div class="col-3 mb-2 mt-4">
+			<select class="form-control" id="type" required>
+				<option selected value=1>عميل</option>
+				<option value=2>زميل</option>
+				<option value=3>حساب العفش فقط</option>
+			</select>
+			<div class="invalid-feedback">إختار النوع من فضلك</div>
+		</div>
+		<div class="col-3 mb-2 mt-4">
+			<select class="form-control" id="customer" required>
+				<option disabled selected value="">إختار العميل</option>
+			</select>
+			<div class="invalid-feedback">إختار النوع من فضلك</div>
+		</div>
+		<div class="col-1 mb-2 mt-4">
+			<i class="form-control btn btn-primary" id = "ex1" data-toggle="modal" data-target="#ex">+</i>
+		</div>
+		<div class="col-5 mb-2 mt-4"></div>
+		<div class="col-3 mb-2">
+			<select class="form-control" id="services" required>
+				<option disabled selected value="">إختار الخدمة</option>
+				<?php
+					foreach($services as $service){
+						echo "<option value='".$service['id']."'>".$service['name']."</option>";
+					}
+				?>
+			</select>
+			<div class="invalid-feedback">إختار الخدمة من فضلك</div>
+		</div>
+		<div class="col-3 mb-2">
+			<input type="text" class="form-control" value="" id="quantity" required>
+			<div class="invalid-feedback">إدخل الكمية من فضلك</div>
+		</div>
+		<div class="col-1 mb-2">
+			<button type="submit" class="form-control btn btn-primary">إضافة</button>
+		</div>
+		<div class="col-5 mb-2"></div>
+	</form>
 	<table class='table' style="width:96%;margin: 0 auto;">
 		<thead class='tableStyle'>
 			<tr>
@@ -83,3 +135,55 @@
 			<button type="submit" class="form-control btn btn-primary">حفظ</button>
 		</div>
 	</form>
+	<!-- **********************modal*************** -->
+	<div class='modal fade' id='ex' role='dialog' tabindex='-1' aria-labelledby="exLabel" aria-hidden='true'>
+		<div class="modal-dialog" role="document">
+			<div class="modal-content" style="padding-right:10px;padding-left:10px;">
+				<form class="row g-3 needs-validation" id="customers"novalidate>
+					<div class="col-10 mt-2"><h4>إضافة عميل</h4></div>
+					<div class="col-1" style="padding-left:10px;">
+						<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="col-12">
+						<label for="customerName">اسم العميل</label>
+						<input type="text" class="form-control" required id="customerName">
+						<div class="invalid-feedback">اكتب الاسم من فضلك</div>
+					</div>
+					<div class="col-12">
+						<label for="phone">أدخل رقم الهاتف</label>
+						<input type="text" class="form-control" required id="phone">
+						<div class="invalid-feedback">اكتب رقم الهاتف من فضلك</div>
+					</div>
+					<div class="col-12">
+						<label for="address">أدخل العنوان</label>
+						<input type="text" class="form-control" required id="address">
+						<div class="invalid-feedback">اكتب عنوان المنزل من فضلك</div>
+					</div>
+					<div class="col-12" style='color:white'>-</div>
+					<div class="col-4 mb-3">
+						<button class="form-control btn btn-secondary" data-dismiss="modal">قفل الصفحة</button>
+					</div>
+					<div class="col-5 mb-3"></div>
+					<div class="col-3 mb-3">
+						<button type="submit" class="btn btn-primary">حفظ</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<?php
+		/* End bocking Page */
+		include $tpl . 'footer.php';
+	?>
+	<script src="<?php echo $controller ?>bockings/bocking.js"></script>
+	<?php
+		include $tpl . 'footerClose.php';
+	}
+	else{
+		header('Location:../../index.php');
+		exit();
+	}
+	ob_end_flush();
+?>

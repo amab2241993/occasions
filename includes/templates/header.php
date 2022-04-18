@@ -13,3 +13,4 @@
 		<link rel="stylesheet" href="<?php echo $css ?>style.css"/>
 		<link rel="stylesheet" href="<?php echo $css ?>jquery.dataTables.min.css"/>
 		<link rel="stylesheet" href="<?php echo $css ?>select2.min.css"/>
+		<script src="<?php echo $js ?>jquery-3.5.1.min.js"></script>
