@@ -5,6 +5,8 @@
 		$pageTitle = 'bockings first';
 		$getH3 = 'حجوزات مبدائية';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>bockings/bockingFirst.js"></script><?php
+		include $tpl . 'navbar.php';
 		$stmt = $con->prepare("SELECT id , name FROM accounts WHERE parent_id = 5");
 		$stmt->execute();
 		$accounts = $stmt->fetchAll();
@@ -182,10 +184,6 @@
 	<?php
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>bockings/bockingFirst.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location:../../index.php');

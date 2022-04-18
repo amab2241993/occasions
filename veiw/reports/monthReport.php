@@ -5,6 +5,8 @@
 		$pageTitle = 'month report';
 		$getH3 = 'التقرير الشهرية';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>reports/monthReport.js"></script><?php
+		include $tpl . 'navbar.php';
 		$rows      = NULL ;
 		$price     = 0 ;
 		$amount    = 0 ;
@@ -164,10 +166,6 @@
 		}
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>reports/monthReport.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location:../../index.php');

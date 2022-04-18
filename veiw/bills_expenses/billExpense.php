@@ -5,6 +5,8 @@
 		$pageTitle = 'bills expenses';
 		$getH3     = 'مصروفات فواتير';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>bills_expenses/billExpense.js"></script><?php
+		include $tpl . 'navbar.php';
 		$stmt = $con->prepare(
 			"SELECT bills.* , customers.name AS customer_name FROM bills
 			 INNER JOIN customers ON bills.customer_id = customers.id
@@ -204,10 +206,6 @@
 	<?php
 		/* End bocking Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>bills_expenses/billExpense.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location:../../index.php');

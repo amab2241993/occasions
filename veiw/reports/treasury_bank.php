@@ -5,6 +5,7 @@
 		$pageTitle = 'treasury bank';
 		$getH3 = 'الخزنة والبنك';
 		include '../../init.php';
+		include $tpl . 'navbar.php';
 		$stmt = $con->prepare(
 			"SELECT sum(debtor) as debtor , sum(creditor) as creditor FROM move_line WHERE account_id = 6"
 		);
@@ -40,7 +41,6 @@
 	<?php
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location:../../index.php');

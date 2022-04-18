@@ -72,8 +72,12 @@ $(function () {
                 else{
                     $('table').show()
                     $('#bockings').show()
-                    $("#type").attr({"disabled" : true})
-                    $("#customer").attr({"disabled" : true})
+                    if(!$("#type").is(':disabled')){
+                        $("#type").attr({"disabled" : true})
+                    }
+                    if(!$("#customer").is(':disabled')){
+                        $("#customer").attr({"disabled" : true})
+                    }
                 }
                 if(tester != 1){
                     var quantity     = parseInt($('#quantity').val())
@@ -318,7 +322,7 @@ $(function () {
             numDaysOld  = 1
         }
         var baggage     =  parseInt(baggageOld) - (parseInt(totalUnits) * parseInt(numDaysOld))
-        var baggageHide =  parseInt($('#baggageHide').text()) - parseInt(totalUnits)
+        var baggageHide =  parseInt($('#baggageHide').val()) - parseInt(totalUnits)
         var workers     =  parseInt(workersOld) - parseInt(priceWorkers)
         var remaining   =  parseInt(baggage) + parseInt(relay) + parseInt(workers)
         var total       =  parseInt(baggage) + parseInt(relay) + parseInt(workers)
@@ -351,6 +355,95 @@ $(function () {
         if($('input[name="quantities[]"]').length == 0){
             $('#bockings').hide()
             $('table').hide()
+            if($("#type").is(':disabled')){
+                $("#type").attr({"disabled" : false})
+            }
+            if($("#customer").is(':disabled')){
+                $("#customer").attr({"disabled" : false})
+            }
+        }
+    })
+    $('#bockings').submit(function(data){
+        data.preventDefault()
+        var form = document.getElementById('bockings')
+        if(form.checkValidity()){
+            var idNumbers1 = $('td[name="id_numbers[]"]').map(function(){
+                if($(this).text() != 0)return $(this).text()
+            })
+            var item1 = $('td[name="item[]"]').map(function(){
+                if($(this).text() != 0)return $(this).text()
+            })
+            var quantities1 = $('input[name="quantities[]"]').map(function(){
+                if($(this).val() != 0)return $(this).val()
+            })
+            var priceUnit1 = $('td[name="price_unit[]"]').map(function(){
+                if($(this).text() != 0)return $(this).text()
+            })
+            var priceWorker1 = $('td[name="price_worker[]"]').map(function(){
+                if($(this).text() != 0)return $(this).text()
+            })
+            var priceWorkers1 = $('td[name="price_workers[]"]').map(function(){
+                if($(this).text() != 0)return $(this).text()
+            })
+            var totalUnits1 = $('td[name="total_units[]"]').map(function(){
+                if($(this).text() != 0)return $(this).text()
+            })
+            var worker1 = $('input[name="worker[]"]').map(function(){
+                if($(this).val() != 0)return $(this).val()
+            })
+            var store1 = $('input[name="store[]"]').map(function(){
+                if($(this).val() != 0)return $(this).val()
+            })
+            var objectA = []
+            for (let index = 0; index < idNumbers1.length; index++) {
+                var feed;
+                if($('#type').val() != 3){
+                    feed = {
+                        "id"           : index + 1,
+                        "serviceId"    : idNumbers1[index],
+                        "serviceName"  : item1[index],
+                        "quantity"     : quantities1[index],
+                        "priceUnit"    : priceUnit1[index],
+                        "priceWorker"  : priceWorker1[index],
+                        "priceWorkers" : priceWorkers1[index],
+                        "totalUnits"   : totalUnits1[index],
+                        "workerId"     : worker1[index],
+                        "storeId"      : store1[index],
+                    }
+                }
+                else{
+                    feed = {
+                        "id"           : index + 1,
+                        "serviceId"    : idNumbers1[index],
+                        "serviceName"  : item1[index],
+                        "quantity"     : quantities1[index],
+                        "priceUnit"    : priceUnit1[index],
+                        "totalUnits"   : totalUnits1[index],
+                        "workerId"     : worker1[index],
+                        "storeId"      : store1[index],
+                    }
+                }
+                objectA.push(feed)
+            }
+            $.ajax({
+                type:'post',
+                url:'../../model/bockings/bocking.php',
+                data:{
+                    customerId  : $('#customer').val(),
+                    billDate    : $('#date').val(),
+                    numDays     : $('#num_days').val(),
+                    baggage     : $('#baggage').text(),
+                    total_price : $('#total').text(),
+                    discount    : $('#discount').val(),
+                    relay       : $('#relay').val(),
+                    empPrice    : $('#workers').text(),
+                    billType    : $('#type').val(),
+                    price       : $('#remaining').val(),
+                    details     : objectA
+                }
+            }).done(function(){
+                window.location = "../bockings/bockingFirst.php";
+            })
         }
     })
 })

@@ -5,7 +5,7 @@
 		$pageTitle = 'dfar';
 		$getH3 = 'تقرير الدفار';
 		include '../../init.php';
-		?><script src="<?php echo $controller ?>reports/warehouses.js"></script><?php
+		?><script src="<?php echo $controller ?>reports/dfar.js"></script><?php
 		include $tpl . 'navbar.php';
 		$discount = 0;
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {

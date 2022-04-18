@@ -5,6 +5,8 @@
 		$pageTitle = 'Social Responsibility';
 		$getH3 = 'تقرير المسؤلية المجتمعية';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>reports/responsibility.js"></script><?php
+		include $tpl . 'navbar.php';
 		$discount = 0;
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$date1 = '' ;
@@ -214,10 +216,6 @@
 	<?php
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>reports/responsibility.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	// }
 	// else{
 		// header('Location:../../index.php');

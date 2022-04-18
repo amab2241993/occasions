@@ -5,6 +5,8 @@
 		$pageTitle = 'Dashboard';
 		$getH3     = 'دفترة اليوميات';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>ledgers/ledger.js"></script><?php
+		include $tpl . 'navbar.php';
 		$rows 	   = NULL;
 		$creditor  = 0;
 		$debtor    = 0;
@@ -161,10 +163,6 @@
 	<?php
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>ledgers/ledger.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location:../../index.php');

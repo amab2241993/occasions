@@ -5,6 +5,8 @@
 		$pageTitle = 'profits';
 		$getH3 = 'بند الأرباح الشهرية';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>reports/profits.js"></script><?php
+		include $tpl . 'navbar.php';
 		$price    = 0;
 		$amount   = 0;
 		$total    = 0;
@@ -219,10 +221,6 @@
 		}
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>reports/warehouses.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	// }
 	// else{
 		// header('Location:../../index.php');

@@ -5,6 +5,8 @@
 		$pageTitle = 'bocking';
 		$getH3 = 'تعديل  الفاتورة';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>bockings/bockingUpdate.js"></script><?php
+		include $tpl . 'navbar.php';
 		/* Start bocking Page */
 		if(isset($_GET['bill']) && isset($_GET['status'])){
 			$stmt = $con->prepare("SELECT * FROM services WHERE parent_id <=> NULL ORDER BY id DESC");
@@ -188,10 +190,6 @@
 		<?php
 			/* End bocking Page */
 			include $tpl . 'footer.php';
-		?>
-		<script src="<?php echo $controller ?>bockings/bockingUpdate.js"></script>
-		<?php
-			include $tpl . 'footerClose.php';
 		}
 	}
 	else{

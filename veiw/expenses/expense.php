@@ -5,6 +5,8 @@
 		$pageTitle = 'expenses';
 		$getH3     = 'المصروفات';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>expenses/expense.js"></script><?php
+		include $tpl . 'navbar.php';
 		$stmt = $con->prepare("SELECT id,name FROM accounts WHERE parent_id = 4 AND id != 20 AND id != 21");
 		$stmt->execute();
 		$rows = $stmt->fetchAll();
@@ -64,10 +66,6 @@
 	<?php
 		/* End bocking Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>expenses/expense.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location:../../index.php');
