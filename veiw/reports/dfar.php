@@ -5,6 +5,8 @@
 		$pageTitle = 'dfar';
 		$getH3 = 'تقرير الدفار';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>reports/warehouses.js"></script><?php
+		include $tpl . 'navbar.php';
 		$discount = 0;
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$date1 = '' ;
@@ -18,19 +20,20 @@
 				$date1 = $_POST['date2'];
 			}
 			$stmt = $con->prepare(
-				"SELECT DISTINCT move.statment , move.account_id as accountMove ,
-				 accounts.name , move_line.account_id as accId , move_line.creditor ,
-				 move_line.created_at FROM move
+				"SELECT move.price , move.statment , move.account_id as accountMove ,
+				 accounts.name , move_line.account_id as accId , move_line.creditor , 
+				 move_line.debtor , move_line.created_at FROM move
 				 INNER JOIN move_line ON move.id = move_line.move_id
 				 INNER JOIN accounts ON move_line.account_id = accounts.id
-				 WHERE move_line.created_at >= ? AND move_line.created_at <= ? AND move.account_id = ?"
+				 WHERE move_line.created_at >= ? AND move_line.created_at <= ?"
 			);
-			$stmt->execute(array($date2 , $date1 , 16));
+			$stmt->execute(array($date2,$date1));
 			$moves = $stmt->fetchAll();
 			
 			$stmt = $con->prepare(
-				"SELECT DISTINCT bills.bill_date , bill_expense.relay_in , 
-				 move.statment , move.account_id as accountMove ,
+				"SELECT DISTINCT bills.price , bills.bill_date ,
+				 bill_expense.warehouse , bill_expense.total ,
+				 move.price as amount , move.statment , move.account_id as accountMove ,
 				 accounts.name ,
 				 move_line.account_id as accId
 				 FROM bills INNER JOIN main ON bills.main_id = main.id
@@ -38,11 +41,21 @@
 				 INNER JOIN bill_expense ON bills.id = bill_expense.bill_id
 				 INNER JOIN move_line ON move.id = move_line.move_id
 				 INNER JOIN accounts ON move_line.account_id = accounts.id
-				 WHERE bills.bill_date >= ? AND bills.bill_date <= ? AND bill_expense.relay_in != 0
+				 WHERE bills.bill_date >= ? AND bills.bill_date <= ?
 				 ORDER BY move_line.id DESC"
 			);
 			$stmt->execute(array($date2,$date1));
 			$bills = $stmt->fetchAll();
+
+			$stmt = $con->prepare(
+				"SELECT sum(bill_refund.refund) as discount FROM bills
+				 INNER JOIN bill_refund ON bills.id = bill_refund.bill_id
+				 WHERE bills.bill_date >= ? AND bills.bill_date <= ?"
+			);
+			$stmt->execute(array($date2,$date1));
+			if($data = $stmt->fetch(PDO::FETCH_ASSOC)){
+				$discount  = $data['discount'];
+			}
 		}
 		else{
 			$date = date('Y-m');
@@ -50,20 +63,19 @@
 			$year = date('Y', $timestamp);
 			$month = date('m', $timestamp);
 			$stmt = $con->prepare(
-				"SELECT DISTINCT move.statment , move.account_id as accountMove ,
-				 accounts.name , move_line.account_id as accId , move_line.creditor ,
-				 move_line.created_at FROM move
+				"SELECT move.price , move.statment , move.account_id as accountMove ,
+				 accounts.name , move_line.account_id as accId , move_line.creditor , 
+				 move_line.debtor , move_line.created_at FROM move
 				 INNER JOIN move_line ON move.id = move_line.move_id
 				 INNER JOIN accounts ON move_line.account_id = accounts.id
-				 WHERE month(move_line.created_at) = ? AND year(move_line.created_at) = ?
-				 AND move.account_id = ?"
+				 WHERE month(move_line.created_at) = ? AND year(move_line.created_at) = ?"
 			);
-			$stmt->execute(array($month , $year , 16));
+			$stmt->execute(array($month,$year));
 			$moves = $stmt->fetchAll();
 			
 			$stmt = $con->prepare(
 				"SELECT DISTINCT bills.price , bills.bill_date ,
-				 bill_expense.relay_in , bill_expense.total ,
+				 bill_expense.warehouse , bill_expense.total ,
 				 move.price as amount , move.statment , move.account_id as accountMove ,
 				 accounts.name ,
 				 move_line.account_id as accId
@@ -73,11 +85,21 @@
 				 INNER JOIN move_line ON move.id = move_line.move_id
 				 INNER JOIN accounts ON move_line.account_id = accounts.id
 				 WHERE month(bills.bill_date) = ? AND year(bills.bill_date) = ?
-				 AND bill_expense.relay_in != 0
 				 ORDER BY move_line.id DESC"
 			);
 			$stmt->execute(array($month,$year));
 			$bills = $stmt->fetchAll();
+			
+			$stmt = $con->prepare(
+				"SELECT sum(bill_refund.refund) as discount FROM bills
+				 INNER JOIN bill_refund ON bills.id = bill_refund.bill_id
+				 WHERE month(bills.bill_date) = ? AND year(bills.bill_date) = ?"
+			);
+			$stmt->execute(array($month,$year));
+			if($data = $stmt->fetch(PDO::FETCH_ASSOC)){
+				$discount  = $data['discount'];
+				if($discount == null || $discount == "") $discount = 0;
+			}
 		}
 	?>
 	<form class="row g-3 needs-validation" novalidate action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
@@ -92,16 +114,56 @@
 		</div>
 	</form>
 	<?php
-		$relayIn = array_sum(array_map(function($item) {
-			return intval($item['relay_in']); 
+		$warehouse = array_sum(array_map(function($item) {
+			return intval($item['warehouse']); 
+		}, $bills));
+		$price = array_sum(array_map(function($item) {
+			return intval($item['price']); 
+		}, $bills));
+		$total = array_sum(array_map(function($item) {
+			return intval($item['total']); 
+		}, $bills));
+		$amount = array_sum(array_map(function($item) {
+			return intval($item['amount']); 
 		}, $bills));
 		$creditor = array_sum(array_map(function($item) {
-			if($item['accId'] != 6 && $item['accId'] != 7){
-				return intval($item['creditor']);
+			if($item['accId'] == 8 || $item['accountMove'] == 15){
+				if($item['accId'] != 6 && $item['accId'] != 7){
+					return intval($item['creditor']);
+				}
 			}
 		}, $moves));
+		$debtor = array_sum(array_map(function($item) {
+			if($item['accId'] == 8 || $item['accountMove'] == 15){
+				if($item['accId'] != 6 && $item['accId'] != 7){
+					return intval($item['debtor']);
+				}
+			}
+		}, $moves));
+		
+		$general = array_sum(array_map(function($item) {
+			if($item['accountMove'] == 13){
+				if($item['accId'] != 6 && $item['accId'] != 7){
+					return intval($item['creditor']);
+				}
+			}
+		}, $moves));
+		$fixed = array_sum(array_map(function($item) {
+			if($item['accountMove'] == 14){
+				if($item['accId'] != 6 && $item['accId'] != 7){
+					return intval($item['creditor']);
+				}
+			}
+		}, $moves));
+		$profitOld = (intval($price)/2) - ((intval($total)/2) + intval($discount));
+		$profits   = $profitOld - (intval($general) + intval($fixed));
+		$debts     = (intval($discount) + (intval($price)/2)) - (intval($amount)/2);
+		$profitNew = $profits - $debts;
+		$result4   = intval(($profits*25)/100);
+		$result7   = intval(($profitNew*25)/100);
+		$all       = intval($warehouse/2) + intval($debtor) + intval($result7) - intval($creditor);
 	?>
-	<table id="dfar" class="table table-striped table-bordered">
+	<table id="warehouses" class="table table-striped table-bordered">
 		<thead class= 'tableStyle'>
 			<tr>
 				<th scope="col-1">التاريخ</th>
@@ -110,6 +172,9 @@
 				<th scope="col-1">البيان</th>
 				<th scope="col-1">إيداع</th>
 				<th scope="col-1">سحب</th>
+				<th scope="col-1">الأرباح</th>
+				<th scope="col-1">الرصيد</th>
+				<th scope="col-1">الديون</th>
 				<th scope="col-1">حذف</th>
 			</tr>
 		</thead>
@@ -129,8 +194,11 @@
 				<td scope="col-md-2"><?=$accountMove['name']?></td>
 				<td scope="col-md-2"><?=$bill['name']?></td>
 				<td scope="col-md-1"><?=substr($bill['statment'] , 15)?></td>
-				<td scope="col-md-1"><?=$bill['relay_in']?></td>
+				<td scope="col-md-1"><?=$bill['warehouse']?></td>
 				<td scope="col-md-1">0</td>
+				<td scope="col-md-1"></td>
+				<td scope="col-md-1"></td>
+				<td scope="col-md-1"></td>
 				<td scope="col-md-1"></td>
 				<?php
 				}
@@ -140,23 +208,28 @@
 				}
 			}
 			foreach($moves as $move){
-				if($move['accId'] != 6 && $move['accId'] != 7){
-					$stmt = $con->prepare("SELECT name FROM accounts WHERE id = ? LIMIT 1");
-					$stmt->execute(array($move['accountMove']));
-					$accountMove = $stmt->fetch();
-					$createDate = new DateTime($move['created_at']);
-					$strip = $createDate->format('Y-m-d');
-				?>
-				<tr>
-					<td scope="col-md-1"><?=$strip?></td>
-					<td scope="col-md-2"><?=$accountMove['name']?></td>
-					<td scope="col-md-2"><?=$move['name']?></td>
-					<td scope="col-md-1"><?=$move['statment']?></td>
-					<td scope="col-md-1">0</td>
-					<td scope="col-md-1"><?=$move['creditor']?></td>
-					<td scope="col-md-1"></td>
-				</tr>
-				<?php
+				if($move['accId'] == 8 || $move['accountMove'] == 15){
+					if($move['accId'] != 6 && $move['accId'] != 7){
+						$stmt = $con->prepare("SELECT name FROM accounts WHERE id = ? LIMIT 1");
+						$stmt->execute(array($move['accountMove']));
+						$accountMove = $stmt->fetch();
+						$createDate = new DateTime($move['created_at']);
+						$strip = $createDate->format('Y-m-d');
+					?>
+					<tr>
+						<td scope="col-md-1"><?=$strip?></td>
+						<td scope="col-md-2"><?=$accountMove['name']?></td>
+						<td scope="col-md-2"><?=$move['name']?></td>
+						<td scope="col-md-1"><?=$move['statment']?></td>
+						<td scope="col-md-1"><?=$move['debtor']?></td>
+						<td scope="col-md-1"><?=$move['creditor']?></td>
+						<td scope="col-md-1"></td>
+						<td scope="col-md-1"></td>
+						<td scope="col-md-1"></td>
+						<td scope="col-md-1"></td>
+					</tr>
+					<?php
+					}
 				}
 			}
 		?>
@@ -167,8 +240,11 @@
 				<td scope="col-md-2"></td>
 				<td scope="col-md-2"></td>
 				<td scope="col-md-1"></td>
-				<td scope="col-md-1"><?=($relayIn/2)?></td>
+				<td scope="col-md-1"><?=($warehouse/2) + $debtor?></td>
 				<td scope="col-md-1"><?=$creditor?></td>
+				<td scope="col-md-1"><?=$result7?></td>
+				<td scope="col-md-1"><?=$all?></td>
+				<td scope="col-md-1"><?=$result4 - $result7?></td>
 				<td scope="col-md-1"></td>
 			</tr>
 		</thead>
@@ -176,10 +252,6 @@
 	<?php
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>reports/dfar.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	// }
 	// else{
 		// header('Location:../../index.php');

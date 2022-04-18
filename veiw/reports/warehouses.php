@@ -5,6 +5,8 @@
 		$pageTitle = 'warehouses';
 		$getH3 = 'تقارير المستودعات';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>reports/warehouses.js"></script><?php
+		include $tpl . 'navbar.php';
 		$discount = 0;
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$date1 = '' ;
@@ -29,7 +31,7 @@
 			$moves = $stmt->fetchAll();
 			
 			$stmt = $con->prepare(
-				"SELECT bills.price , bills.bill_date ,
+				"SELECT DISTINCT bills.price , bills.bill_date ,
 				 bill_expense.warehouse , bill_expense.total ,
 				 move.price as amount , move.statment , move.account_id as accountMove ,
 				 accounts.name ,
@@ -72,7 +74,7 @@
 			$moves = $stmt->fetchAll();
 			
 			$stmt = $con->prepare(
-				"SELECT bills.price , bills.bill_date ,
+				"SELECT DISTINCT bills.price , bills.bill_date ,
 				 bill_expense.warehouse , bill_expense.total ,
 				 move.price as amount , move.statment , move.account_id as accountMove ,
 				 accounts.name ,
@@ -250,10 +252,6 @@
 	<?php
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>reports/warehouses.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	// }
 	// else{
 		// header('Location:../../index.php');
