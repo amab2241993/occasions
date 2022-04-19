@@ -109,22 +109,6 @@
 						<?php
 							$i++;
 						}
-						for ($i=count($jsons); $i < count($services) ; $i++) {
-						?>
-						<tr>
-							<td scope="col-1 mb-2" name="id_numbers[]" id=<?="id_numbers" . $i?>>0</td>
-							<td scope="col-1 mb-2" name="item[]" id=<?="item" . $i ?>>0</td>
-							<td scope="col-1 mb-2" style="width:15%">
-								<input class='form-control' type='number' name='quantities[]' id=<?='quantities' . $i?> value=0>
-							</td>
-							<td scope="col-2 mb-2" name="price_unit[]"    id=<?='price_unit'    . $i?>><?=$i?></td>
-							<td scope="col-2 mb-2" name="price_worker[]"  id=<?='price_worker'  . $i?>>0</td>
-							<td scope="col-2 mb-2" name="price_workers[]" id=<?='price_workers' . $i?>>0</td>
-							<td scope="col-2 mb-2" name="total_units[]"   id=<?='total_units'   . $i?>>0</td>
-							<td scope="col-1 mb-2" name="delete[]"        id=<?='delete' .$i?>><i class='fa fa-remove delete'></td>
-						</tr>
-						<?php
-						}
 					?>
 				</tbody>
 			</table>
@@ -140,13 +124,6 @@
 				<input type='hidden' name ="store[]" id=<?="store".$i?> value=<?=$json->storeId?>>
 				<?php
 					$i++;
-				}
-				for ($i=count($jsons); $i < count($services) ; $i++) {
-				?>
-				<input type='hidden' id=<?="quantityHide".$i?> value=0>
-				<input type='hidden' name ="worker[]" id=<?="worker".$i?> value=0>
-				<input type='hidden' name ="store[]" id=<?="store".$i?> value=0>
-				<?php
 				}
 			?>
 			<div class="col-1 mb-2">

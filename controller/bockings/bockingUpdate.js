@@ -3,10 +3,44 @@ $(function () {
     onload = function(){
         $("#type").attr({"disabled" : true})
         $("#customer").attr({"disabled" : true})
-        for (let index = $('#jsons').val(); index < parseInt($('#remember').val()) ; index++) {
-            $('tbody > tr').eq(index).hide();
-        }
     }
+    $('#type').on('change',function(){
+        $.ajax({
+            type:'post',
+            url:'../../model/bockings/bockings.php',
+            data:{customerId:$('#type').val()}
+        }).done(function(data){
+            $('#customer').find('option').remove().end()
+            $('#customer').append(`<option disabled selected value="">${'إختار العميل'}</option>`)
+            $.each(data, function(index){
+                $('#customer').append(`<option value="${data[index].id}">${data[index].name}</option>`)
+            })
+        })
+    })
+    $('#customers').submit(function(data){
+        data.preventDefault()
+        var form = document.getElementById('customers')
+        if(form.checkValidity()){
+            var status = $('#type').val() != 1 ? 2 : 1
+            $.ajax({
+                type:'post',
+                url:'../../model/bockings/customers.php',
+                data:{
+                    name    : $('#customerName').val(),
+                    phone   : $('#phone').val(),
+                    address : $('#address').val(),
+                    status  : status,
+                },
+                cache:false
+            }).done(function(){
+                window.location = "bocking.php?date="+$("#date").val()
+            })
+        }
+    })
+    $("#services").on('change',function(){
+        var next = $("input").eq(2);
+        next.focus()
+    })
     $('#bocking').submit(function(data){
         data.preventDefault()
         var form = document.getElementById('bocking')
@@ -17,11 +51,7 @@ $(function () {
                 data:{id:$('#services').val()}
             }).done(function(data){
                 var tester = 0 // لختبار العنصر موجود مسبقا 0 يعني غير موجود
-                var x = $("tbody").children().length // عدد الاصناف الفرعية
-                var y = $('tbody > tr').filter(function() {
-                    return $(this).css('display') === 'none';
-                }).length // عدد العناصر المخفية
-                var result = parseInt(x - y) // عدد العناصر الظاهرة
+                var result = parseInt($('td[name="id_numbers[]"]').length)
                 tester = result == 0 ? 2 : 0 // في المرة الأولة لايتم إختبار
                 if(tester != 2){
                     $('td[name="id_numbers[]"]').map(function(){
@@ -31,9 +61,14 @@ $(function () {
                 else{
                     $('table').show()
                     $('#bockingUpdate').show()
+                    if(!$("#type").is(':disabled')){
+                        $("#type").attr({"disabled" : true})
+                    }
+                    if(!$("#customer").is(':disabled')){
+                        $("#customer").attr({"disabled" : true})
+                    }
                 }
                 if(tester != 1){
-                    $('tbody > tr').eq(result).show();
                     var quantity     = parseInt($('#quantity').val())
                     var priceUnit    = parseInt($('#type').val()) != 1 ? parseInt(data.companion_price) : parseInt(data.customer_price)
                     var totalUnits   = parseInt(quantity) * parseInt(priceUnit)
@@ -41,32 +76,42 @@ $(function () {
                     var priceWorkers = parseInt(quantity) * priceWorker
                     var numDays      = $('#num_days').val()
                     if(numDays == "" || numDays == null){
-                        numDays = 0
+                        numDays = 1
                     }
                     var totalUnitsDays   = totalUnits * parseInt(numDays)
                     var totalBaggages    = totalUnitsDays + priceWorkers
-                    $('#id_numbers'      + result).text(data.count)
-                    $('#item'            + result).text(data.name)
-                    $('#quantities'      + result).val(quantity)
-                    $('#worker'          + result).val(data.worker_id)
-                    $('#store'           + result).val(data.store_id)
-                    $('#quantityHide'    + result).val(quantity)
-                    $('#price_unit'      + result).text(priceUnit)
-                    $('#total_units'     + result).text(totalUnits)
+                    var html = `<tr>
+                    <td scope="col-1 mb-2" name="id_numbers[]" id="id_numbers${result}">${data.count}</td>
+                    <td scope="col-1 mb-2" name="item[]" id="item${result}">${data.name}</td>
+                    <td scope="col-1 mb-2" style="width:15%">
+                    <input class='form-control'
+                    type='number' name='quantities[]' id="quantities${result}" value=${quantity}>
+                    </td>
+                    <td scope="col-2 mb-2" name="price_unit[]"    id="price_unit${result}">${priceUnit}</td>`
+                    var form =  `<input type="hidden" name="worker[]" id="worker${result}" value=${data.worker_id}>`
+                        form += `<input type="hidden" name="store[]" id="store${result}" value=${data.store_id}>`
+                        form += `<input type="hidden" id="quantityHide${result}" value=${quantity}>`
                     $("#baggage").text(parseInt($("#baggage").text()) + parseInt(totalUnitsDays))
+                    $("#baggageHide").val(parseInt($("#baggageHide").val()) + parseInt(totalUnits))
                     if($('#type').val() != 3){
-                        $('#price_worker'    + result).text(priceWorker)
-                        $('#price_workers'   + result).text(priceWorkers)
                         $("#workers").text(parseInt($("#workers").text()) + priceWorkers)
                         $("#remaining").val(parseInt($("#remaining").val()) + totalBaggages)
                         $("#total").text(parseInt($("#total").text()) + totalBaggages)
                     }
                     else{
+                        priceWorker  = 0
+                        priceWorkers = 0
                         $("#remaining").val(parseInt($("#remaining").val()) + totalUnitsDays)
                         $("#total").text(parseInt($("#total").text()) + totalUnitsDays)
-
                     }
-                    $("#baggageHide").val(parseInt($("#baggageHide").val()) + parseInt(totalUnits))
+                    html += `<td scope="col-2 mb-2" name="price_worker[]"  id="price_worker${result}">${priceWorker}</td>
+                    <td scope="col-2 mb-2" name="price_workers[]" id="price_workers${result}">${priceWorkers}</td>
+                    <td scope="col-2 mb-2" name="total_units[]"   id="total_units${result}">${totalUnits}</td>
+                    <td scope="col-1 mb-2">
+                    <i class='fa fa-remove delete'>
+                    </td></tr>`
+                    $('tbody').append(html)
+                    $('#bockingUpdate').append(form)
                 }
                 else{
                     alert('هذا الصنف موجود مسبقا')
@@ -75,167 +120,6 @@ $(function () {
                 $("#services").val("")
             })
         }
-    })
-    $("#services").on('change',function(){
-        var next = $("input").eq(1);
-        next.focus()
-    })
-    $('td[name="delete[]"]').on('click' , function(){
-        var index           = $('td[name="delete[]"]').index(this)
-        var priceWorkers    = $('#price_workers'   + index).text()
-        var totalUnits      = $('#total_units'     + index).text()
-        var baggageOld      = $('#baggage').text()
-        var workersOld      = $('#workers').text()
-        var remainingOld    = $('#remaining').val()
-        var numDaysOld      = $('#num_days').val()
-        var discountOld     = $('#discount').val()
-        var totalOld        = $('#total').text()
-        var baggageHideOld  = $('#baggageHide').val()
-        if(discountOld == "" || discountOld == null ){
-            discountOld  = 0
-        }
-        if(numDaysOld == "" || numDaysOld == null ){
-            numDaysOld  = 0
-        }
-        var baggageNew      =  parseInt(baggageOld)     - (parseInt(totalUnits) * parseInt(numDaysOld))
-        var workersNew      =  parseInt(workersOld)     - parseInt(priceWorkers)
-        var remainingNew    =  parseInt(remainingOld)   - (parseInt(totalUnits) * parseInt(numDaysOld))
-        remainingNew        += parseInt(discountOld)    - parseInt(priceWorkers)
-        var totalNew        =  parseInt(totalOld)       - (parseInt(totalUnits) * parseInt(numDaysOld))
-        var baggageHideNew  =  parseInt(baggageHideOld) - parseInt(totalUnits)
-        totalNew            -= parseInt(priceWorkers)
-        $('#baggage').text(baggageNew)
-        $('#workers').text(workersNew)
-        $('#remaining').val(remainingNew)
-        $('#total').text(totalNew)
-        $('#baggageHide').val(baggageHideNew)
-        $('#percentage_discount').val(0)
-        $('#discount').val(0)
-        var x = $("tbody").children().length
-        var y = $('tbody > tr').filter(function() {
-            return $(this).css('display') === 'none';
-        }).length
-        var result = parseInt(x - y) - 1
-        for (let counter = index; counter < result; counter++) {
-            $('#id_numbers'      + counter).text($('#id_numbers'     + (counter + 1)).text())
-            $('#item'            + counter).text($('#item'           + (counter + 1)).text())
-            $('#quantities'      + counter).val($('#quantities'      + (counter + 1)).val())
-            $('#quantityHide'    + counter).val($('#quantityHide'    + (counter + 1)).val())
-            $('#price_unit'      + counter).text($('#price_unit'     + (counter + 1)).text())
-            $('#price_worker'    + counter).text($('#price_worker'   + (counter + 1)).text())
-            $('#itemHide'        + counter).val($('#itemHide'        + (counter + 1)).val())
-            $('#idNumbersHide'   + counter).val($('#idNumbersHide'   + (counter + 1)).val())
-            $('#price_workers'   + counter).text($('#price_workers'  + (counter + 1)).text())
-            $('#total_units'     + counter).text($('#total_units'    + (counter + 1)).text())
-            $('#worker'          + counter).text($('#worker'         + (counter + 1)).val())
-            $('#store'           + counter).text($('#store'          + (counter + 1)).val())
-        }
-        $('#id_numbers'      + result).text(0)
-        $('#item'            + result).text(0)
-        $('#quantities'      + result).val(0)
-        $('#quantityHide'    + result).val(0)
-        $('#price_unit'      + result).text(0)
-        $('#price_worker'    + result).text(0)
-        $('#price_workers'   + result).text(0)
-        $('#total_units'     + result).text(0)
-        $('#worker'          + result).val(0)
-        $('#store'           + result).val(0)
-        $('tbody > tr').eq(result).hide();
-        if(result == 0){
-            $('#baggage').text(0)
-            $('#workers').text(0)
-            $('#remaining').val(0)
-            $('#total').text(0)
-            $('#baggageHide').val(0)
-            $('#percentage_discount').val(0)
-            $('#discount').val(0)
-            $('#num_days').val(1)
-            $('#relay').val(0)
-            $('#worker' + result).val(0)
-            $('#store'  + result).val(0)
-            $('table').hide()
-            $('#bockingUpdate').hide()
-        }
-    })
-    $('input[name="quantities[]"]').on('keyup' , function(){
-        var index        = $('input[name="quantities[]"]').index(this)
-        var quantityHide = $('#quantityHide' + index).val()
-        var quantity     = $('#quantities'      + index).val()
-        if(quantity == "" || quantity == null || parseInt(quantity) == 0){
-            quantity  = 1
-            $('#quantities'      + index).val(1)
-        }
-        
-        var priceUnit       = $('#price_unit'    + index).text()
-        var priceWorker     = $('#price_worker'  + index).text()
-        var priceWorkersOld = $('#price_workers' + index).text()
-        var totalUnitsOld   = $('#total_units'   + index).text()
-        var priceWorkersNew = parseInt(quantity) * parseInt(priceWorker)
-        var totalUnitsNew   = parseInt(quantity) * parseInt(priceUnit)
-        var priceWorkers    = Math.abs(parseInt(priceWorkersOld) - parseInt(priceWorkersNew))
-        var totalUnits      = Math.abs(parseInt(totalUnitsOld)   - parseInt(totalUnitsNew))
-        $('#price_workers'   + index).text(priceWorkersNew)
-        $('#total_units'     + index).text(totalUnitsNew)
-        $('#quantityHide' + index).val(quantity)
-        
-        var baggageOld      = $('#baggage').text()
-        var workersOld      = $('#workers').text()
-        var remainingOld    = $('#remaining').val()
-        var numDaysOld      = $('#num_days').val()
-        var discountOld     = $('#discount').val()
-        var totalOld        = $('#total').text()
-        var baggageHideOld  = $('#baggageHide').val()
-        
-        if(discountOld == "" || discountOld == null ){
-            discountOld  = 0
-        }
-        if(numDaysOld == "" || numDaysOld == null ){
-            numDaysOld  = 0
-        }
-        var comparison      = parseInt(quantityHide) > parseInt(quantity) ? 1 : 0
-        if(comparison == 1){
-            var baggageNew      =  parseInt(baggageOld)     - (parseInt(totalUnits) * parseInt(numDaysOld))
-            var workersNew      =  parseInt(workersOld)     - parseInt(priceWorkers)
-            var remainingNew    =  parseInt(remainingOld)   - (parseInt(totalUnits) * parseInt(numDaysOld))
-            var totalNew        =  parseInt(totalOld)       - (parseInt(totalUnits) * parseInt(numDaysOld))
-            var baggageHideNew  =  parseInt(baggageHideOld) - parseInt(totalUnits)
-            totalNew            -= parseInt(priceWorkers)
-            if(quantity != quantityHide){
-                remainingNew += parseInt(discountOld) - parseInt(priceWorkers)
-            }
-            else{
-                remainingNew -=parseInt(priceWorkers)
-            }
-            $('#baggage').text(baggageNew)
-            $('#workers').text(workersNew)
-            $('#remaining').val(remainingNew)
-            $('#total').text(totalNew)
-            $('#baggageHide').val(baggageHideNew)
-        }
-        else{
-            var baggageNew      =  parseInt(baggageOld)     + (parseInt(totalUnits) * parseInt(numDaysOld))
-            var workersNew      =  parseInt(workersOld)     + parseInt(priceWorkers)
-            var remainingNew    =  parseInt(remainingOld)   + (parseInt(totalUnits) * parseInt(numDaysOld))
-            var totalNew        =  parseInt(totalOld)       + (parseInt(totalUnits) * parseInt(numDaysOld))
-            var baggageHideNew  =  parseInt(baggageHideOld) + parseInt(totalUnits)
-            totalNew            += parseInt(priceWorkers)
-            if(quantity != quantityHide){
-                remainingNew += parseInt(discountOld) + parseInt(priceWorkers)
-            }
-            else{
-                remainingNew +=parseInt(priceWorkers)
-            }
-            $('#baggage').text(baggageNew)
-            $('#workers').text(workersNew)
-            $('#remaining').val(remainingNew)
-            $('#total').text(totalNew)
-            $('#baggageHide').val(baggageHideNew)
-        }
-        if(quantity != quantityHide){
-            discountOld = 0
-            $('#percentage_discount').val(0)
-        }
-        $('#discount').val(discountOld)
     })
     $('#relay').on('keyup' , function(){
         var baggage , workers , count , discount , percentage
@@ -331,6 +215,142 @@ $(function () {
         $("#baggage").text(baggage_hide)
         $("#remaining").val(discount)
         $("#total").text(count)
+    })
+    $('input[name="quantities[]"]').on('keyup' , function(){
+        var index        = $('input[name="quantities[]"]').index(this)
+        var quantityHide = $('#quantityHide' + index).val()
+        var quantity     = $('#quantities'      + index).val()
+        if(quantity == "" || quantity == null || parseInt(quantity) == 0){
+            quantity  = 1
+            $('#quantities'      + index).val(1)
+        }
+        
+        var priceUnit       = $('#price_unit'    + index).text()
+        var priceWorker     = $('#price_worker'  + index).text()
+        var priceWorkersOld = $('#price_workers' + index).text()
+        var totalUnitsOld   = $('#total_units'   + index).text()
+        var priceWorkersNew = parseInt(quantity) * parseInt(priceWorker)
+        var totalUnitsNew   = parseInt(quantity) * parseInt(priceUnit)
+        var priceWorkers    = Math.abs(parseInt(priceWorkersOld) - parseInt(priceWorkersNew))
+        var totalUnits      = Math.abs(parseInt(totalUnitsOld)   - parseInt(totalUnitsNew))
+        $('#price_workers'   + index).text(priceWorkersNew)
+        $('#total_units'     + index).text(totalUnitsNew)
+        $('#quantityHide' + index).val(quantity)
+        
+        var baggageOld      = $('#baggage').text()
+        var workersOld      = $('#workers').text()
+        var remainingOld    = $('#remaining').val()
+        var numDaysOld      = $('#num_days').val()
+        var discountOld     = $('#discount').val()
+        var totalOld        = $('#total').text()
+        var baggageHideOld  = $('#baggageHide').val()
+        
+        if(discountOld == "" || discountOld == null ){
+            discountOld  = 0
+        }
+        if(numDaysOld == "" || numDaysOld == null ){
+            numDaysOld  = 1
+        }
+        var comparison      = parseInt(quantityHide) > parseInt(quantity) ? 1 : 0
+        if(comparison == 1){
+            var baggageNew      =  parseInt(baggageOld)     - (parseInt(totalUnits) * parseInt(numDaysOld))
+            var workersNew      =  parseInt(workersOld)     - parseInt(priceWorkers)
+            var remainingNew    =  parseInt(remainingOld)   - (parseInt(totalUnits) * parseInt(numDaysOld))
+            var totalNew        =  parseInt(totalOld)       - (parseInt(totalUnits) * parseInt(numDaysOld))
+            var baggageHideNew  =  parseInt(baggageHideOld) - parseInt(totalUnits)
+            totalNew            -= parseInt(priceWorkers)
+            if(quantity != quantityHide){
+                remainingNew += parseInt(discountOld) - parseInt(priceWorkers)
+            }
+            else{
+                remainingNew -=parseInt(priceWorkers)
+            }
+            $('#baggage').text(baggageNew)
+            $('#workers').text(workersNew)
+            $('#remaining').val(remainingNew)
+            $('#total').text(totalNew)
+            $('#baggageHide').val(baggageHideNew)
+        }
+        else{
+            var baggageNew      =  parseInt(baggageOld)     + (parseInt(totalUnits) * parseInt(numDaysOld))
+            var workersNew      =  parseInt(workersOld)     + parseInt(priceWorkers)
+            var remainingNew    =  parseInt(remainingOld)   + (parseInt(totalUnits) * parseInt(numDaysOld))
+            var totalNew        =  parseInt(totalOld)       + (parseInt(totalUnits) * parseInt(numDaysOld))
+            var baggageHideNew  =  parseInt(baggageHideOld) + parseInt(totalUnits)
+            totalNew            += parseInt(priceWorkers)
+            if(quantity != quantityHide){
+                remainingNew += parseInt(discountOld) + parseInt(priceWorkers)
+            }
+            else{
+                remainingNew +=parseInt(priceWorkers)
+            }
+            $('#baggage').text(baggageNew)
+            $('#workers').text(workersNew)
+            $('#remaining').val(remainingNew)
+            $('#total').text(totalNew)
+            $('#baggageHide').val(baggageHideNew)
+        }
+        if(quantity != quantityHide){
+            discountOld = 0
+            $('#percentage_discount').val(0)
+        }
+        $('#discount').val(discountOld)
+    })
+    $('.delete').on('click' , function(){
+        var index        = $('.delete').index(this)
+        var priceWorkers = $('#price_workers'   + index).text()
+        var totalUnits   = $('#total_units'     + index).text()
+        var baggageOld   = $('#baggage').text()
+        var workersOld   = $('#workers').text()
+        var numDaysOld   = $('#num_days').val()
+        var relay        = $('#relay').val()
+        if(relay == "" || relay == null ){
+            relay  = 0
+        }
+        if(numDaysOld == "" || numDaysOld == null ){
+            numDaysOld  = 1
+        }
+        var baggage     =  parseInt(baggageOld) - (parseInt(totalUnits) * parseInt(numDaysOld))
+        var baggageHide =  parseInt($('#baggageHide').val()) - parseInt(totalUnits)
+        var workers     =  parseInt(workersOld) - parseInt(priceWorkers)
+        var remaining   =  parseInt(baggage) + parseInt(relay) + parseInt(workers)
+        var total       =  parseInt(baggage) + parseInt(relay) + parseInt(workers)
+
+        $('#baggage').text(baggage)
+        $('#baggageHide').val(baggageHide)
+        $('#workers').text(workers)
+        $('#remaining').val(remaining)
+        $('#total').text(total)
+        $('#percentage_discount').val(0)
+        $('#discount').val(0)
+        $(this).parent().parent().remove()
+        $('#quantityHide' + index).remove()
+        $('#store' + index).remove()
+        $('#worker' + index).remove()
+        var x = $("tbody").children().length
+        for (var counter = index; counter < x; counter++) {
+            console.log(counter)
+            $('#id_numbers'    + (counter + 1)).attr("id",("id_numbers"    + counter))
+            $('#item'          + (counter + 1)).attr("id",("item"          + counter))
+            $('#quantities'    + (counter + 1)).attr("id",("quantities"    + counter))
+            $('#quantityHide'  + (counter + 1)).attr("id",("quantityHide"  + counter))
+            $('#price_unit'    + (counter + 1)).attr("id",("price_unit"    + counter))
+            $('#price_worker'  + (counter + 1)).attr("id",("price_worker"  + counter))
+            $('#price_workers' + (counter + 1)).attr("id",("price_workers" + counter))
+            $('#total_units'   + (counter + 1)).attr("id",("total_units"   + counter))
+            $('#worker'        + (counter + 1)).attr("id",("worker"        + counter))
+            $('#store'         + (counter + 1)).attr("id",("store"         + counter))
+        }
+        if($('input[name="quantities[]"]').length == 0){
+            $('#bockingUpdate').hide()
+            $('table').hide()
+            if($("#type").is(':disabled')){
+                $("#type").attr({"disabled" : false})
+            }
+            if($("#customer").is(':disabled')){
+                $("#customer").attr({"disabled" : false})
+            }
+        }
     })
     $('#bockingUpdate').submit(function(data){
         data.preventDefault()

@@ -49,7 +49,7 @@ $(function () {
         }
     })
     $("#services").on('change',function(){
-        var next = $("input").eq(2);
+        var next = $("input").eq(2)
         next.focus()
     })
     $('#bocking').submit(function(data){
@@ -99,8 +99,8 @@ $(function () {
                     type='number' name='quantities[]' id="quantities${result}" value=${quantity}>
                     </td>
                     <td scope="col-2 mb-2" name="price_unit[]"    id="price_unit${result}">${priceUnit}</td>`
-                    var form =  `<input type="hidden" id="worker${result}" value=${data.worker_id}>`
-                        form += `<input type="hidden" id="store${result}" value=${data.store_id}>`
+                    var form =  `<input type="hidden" name="worker[]" id="worker${result}" value=${data.worker_id}>`
+                        form += `<input type="hidden" name="store[]" id="store${result}" value=${data.store_id}>`
                         form += `<input type="hidden" id="quantityHide${result}" value=${quantity}>`
                     $("#baggage").text(parseInt($("#baggage").text()) + parseInt(totalUnitsDays))
                     $("#baggageHide").val(parseInt($("#baggageHide").val()) + parseInt(totalUnits))
@@ -396,7 +396,7 @@ $(function () {
             })
             var objectA = []
             for (let index = 0; index < idNumbers1.length; index++) {
-                var feed;
+                var feed
                 if($('#type').val() != 3){
                     feed = {
                         "id"           : index + 1,
@@ -442,7 +442,36 @@ $(function () {
                     details     : objectA
                 }
             }).done(function(){
-                window.location = "../bockings/bockingFirst.php";
+                $.ajax({
+                    type: "POST",
+                    url: "../../printer/d/bocking.php",
+                    async:false,
+                    success: function(data) {
+                        $(data).printThis({
+                            debug: false,               // show the iframe for debugging
+                            importCSS: true,            // import parent page css
+                            importStyle: true,         // import style tags
+                            printContainer: true,       // print outer container/$.selector
+                            loadCSS: "",                // path to additional css file - use an array [] for multiple
+                            pageTitle: "",              // add title to print page
+                            removeInline: false,        // remove inline styles from print elements
+                            removeInlineSelector: "*",  // custom selectors to filter inline styles. removeInline must be true
+                            printDelay: 333,            // variable print delay
+                            header: null,               // prefix to html
+                            footer: null,               // postfix to html
+                            base: false,                // preserve the BASE tag or accept a string for the URL
+                            formValues: true,           // preserve input/form values
+                            canvas: false,              // copy canvas content
+                            doctypeString: '...',       // enter a different doctype for older markup
+                            removeScripts: false,       // remove script tags from print content
+                            copyTagClasses: false,      // copy classes from the html & body tag
+                            beforePrintEvent: null,     // function for printEvent in iframe
+                            beforePrint: null,          // function called before iframe is filled
+                            afterPrint: null            // function called before iframe is removed
+                        })
+                    }
+                    // window.location = "../bockings/bockingFirst.php"
+                })
             })
         }
     })
