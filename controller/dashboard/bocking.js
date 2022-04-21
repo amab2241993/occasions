@@ -5,7 +5,7 @@ $(function () {
         $('#bockings').hide()
         $.ajax({
             type:'post',
-            url:'../../model/bockings/bockings.php',
+            url:'../../model/dashboard/bockings.php',
             data:{customerId:$('#type').val()}
         }).done(function(data){
             $('#customer').find('option').remove().end()
@@ -18,7 +18,7 @@ $(function () {
     $('#type').on('change',function(){
         $.ajax({
             type:'post',
-            url:'../../model/bockings/bockings.php',
+            url:'../../model/dashboard/bockings.php',
             data:{customerId:$('#type').val()}
         }).done(function(data){
             $('#customer').find('option').remove().end()
@@ -35,7 +35,7 @@ $(function () {
             var status = $('#type').val() != 1 ? 2 : 1
             $.ajax({
                 type:'post',
-                url:'../../model/bockings/customers.php',
+                url:'../../model/dashboard/customers.php',
                 data:{
                     name    : $('#customerName').val(),
                     phone   : $('#phone').val(),
@@ -58,7 +58,7 @@ $(function () {
         if(form.checkValidity()){
             $.ajax({
                 type:'post',
-                url:'../../model/bockings/category.php',
+                url:'../../model/dashboard/category.php',
                 data:{id:$('#services').val()}
             }).done(function(data){
                 var tester = 0 // لختبار العنصر موجود مسبقا 0 يعني غير موجود
@@ -427,7 +427,7 @@ $(function () {
             }
             $.ajax({
                 type:'post',
-                url:'../../model/bockings/bocking.php',
+                url:'../../model/dashboard/bocking.php',
                 data:{
                     customerId  : $('#customer').val(),
                     billDate    : $('#date').val(),
@@ -441,37 +441,48 @@ $(function () {
                     price       : $('#remaining').val(),
                     details     : objectA
                 }
-            }).done(function(){
-                $.ajax({
-                    type: "POST",
-                    url: "../../printer/d/bocking.php",
-                    async:false,
-                    success: function(data) {
-                        $(data).printThis({
-                            debug: false,               // show the iframe for debugging
-                            importCSS: true,            // import parent page css
-                            importStyle: true,         // import style tags
-                            printContainer: true,       // print outer container/$.selector
-                            loadCSS: "",                // path to additional css file - use an array [] for multiple
-                            pageTitle: "",              // add title to print page
-                            removeInline: false,        // remove inline styles from print elements
-                            removeInlineSelector: "*",  // custom selectors to filter inline styles. removeInline must be true
-                            printDelay: 333,            // variable print delay
-                            header: null,               // prefix to html
-                            footer: null,               // postfix to html
-                            base: false,                // preserve the BASE tag or accept a string for the URL
-                            formValues: true,           // preserve input/form values
-                            canvas: false,              // copy canvas content
-                            doctypeString: '...',       // enter a different doctype for older markup
-                            removeScripts: false,       // remove script tags from print content
-                            copyTagClasses: false,      // copy classes from the html & body tag
-                            beforePrintEvent: null,     // function for printEvent in iframe
-                            beforePrint: null,          // function called before iframe is filled
-                            afterPrint: null            // function called before iframe is removed
-                        })
-                    }
-                    // window.location = "../bockings/bockingFirst.php"
-                })
+            }).done(function(info){
+                var data = $.parseJSON(info)
+                if(data[0].status != 100){
+                    alert(data[0].message)
+                }
+                else{
+                    $.ajax({
+                        type: "POST",
+                        url: "../../printer/dashboard/bocking.php",
+                        async:false,
+                        data:{
+                            billId : data[0].billId,
+                            status : 1
+                        },
+                        success: function(data) {
+                            $(data).printThis({
+                                debug: false,               // show the iframe for debugging
+                                importCSS: true,            // import parent page css
+                                importStyle: true,         // import style tags
+                                printContainer: true,       // print outer container/$.selector
+                                loadCSS: "",                // path to additional css file - use an array [] for multiple
+                                pageTitle: "",              // add title to print page
+                                removeInline: false,        // remove inline styles from print elements
+                                removeInlineSelector: "*",  // custom selectors to filter inline styles. removeInline must be true
+                                printDelay: 333,            // variable print delay
+                                header: null,               // prefix to html
+                                footer: null,               // postfix to html
+                                base: false,                // preserve the BASE tag or accept a string for the URL
+                                formValues: true,           // preserve input/form values
+                                canvas: false,              // copy canvas content
+                                doctypeString: '...',       // enter a different doctype for older markup
+                                removeScripts: false,       // remove script tags from print content
+                                copyTagClasses: false,      // copy classes from the html & body tag
+                                beforePrintEvent: null,     // function for printEvent in iframe
+                                beforePrint: null,          // function called before iframe is filled
+                                afterPrint: function(){
+                                    window.location = "../bockings/bockingFirst.php"
+                                }
+                            })
+                        }
+                    })
+                }
             })
         }
     })

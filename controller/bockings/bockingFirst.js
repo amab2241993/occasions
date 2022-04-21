@@ -1,6 +1,7 @@
 $(function () {
     'use strict'
     $('#first').DataTable({
+        "order": [[ 0, "desc" ]],
         "language": {
             "sProcessing": "جارٍ التحميل...",
             "sLengthMenu": "أظهر _MENU_ مدخلات",
@@ -37,13 +38,53 @@ $(function () {
                     type:'post',
                     url:'../../model/bockings/bockingLate.php',
                     data:{
-                        res   :$('#res'   + x).val(),
-                        main  :$('#main'  + x).val(),
-                        type  :$('#type'  + x).val(),
-                        price :$('#price' + x).val(),
+                        billId :$('#billId'   + x).val(),
+                        main   :$('#main'  + x).val(),
+                        type   :$('#type'  + x).val(),
+                        price  :$('#price' + x).val(),
                     }
-                }).done(function(){
-                    window.location = "../bockings/bockingLate.php"
+                }).done(function(info){
+                    var data = $.parseJSON(info)
+                    if(data[0].status != 100){
+                        alert(data[0].message)
+                    }
+                    else{
+                        $.ajax({
+                            type: "POST",
+                            url: "../../printer/dashboard/bocking.php",
+                            async:false,
+                            data:{
+                                billId : data[0].billId,
+                                status : 3
+                            },
+                            success: function(data) {
+                                $(data).printThis({
+                                    debug: false,               // show the iframe for debugging
+                                    importCSS: true,            // import parent page css
+                                    importStyle: true,         // import style tags
+                                    printContainer: true,       // print outer container/$.selector
+                                    loadCSS: "",                // path to additional css file - use an array [] for multiple
+                                    pageTitle: "",              // add title to print page
+                                    removeInline: false,        // remove inline styles from print elements
+                                    removeInlineSelector: "*",  // custom selectors to filter inline styles. removeInline must be true
+                                    printDelay: 333,            // variable print delay
+                                    header: null,               // prefix to html
+                                    footer: null,               // postfix to html
+                                    base: false,                // preserve the BASE tag or accept a string for the URL
+                                    formValues: true,           // preserve input/form values
+                                    canvas: false,              // copy canvas content
+                                    doctypeString: '...',       // enter a different doctype for older markup
+                                    removeScripts: false,       // remove script tags from print content
+                                    copyTagClasses: false,      // copy classes from the html & body tag
+                                    beforePrintEvent: null,     // function for printEvent in iframe
+                                    beforePrint: null,          // function called before iframe is filled
+                                    afterPrint: function(){
+                                        window.location = "../bockings/bockingLate.php"
+                                    }
+                                })
+                            }
+                        })
+                    }
                 })
             }
         }
@@ -55,14 +96,54 @@ $(function () {
                     type:'post',
                     url:'../../model/bockings/bockingFinal.php',
                     data:{
-                        res   :$('#res'   + x).val(),
-                        main  :$('#main'  + x).val(),
-                        type  :$('#type'  + x).val(),
-                        typeM :$('#typeM' + x).val(),
-                        price :$('#price' + x).val(),
+                        billId :$('#billId'   + x).val(),
+                        main   :$('#main'  + x).val(),
+                        type   :$('#type'  + x).val(),
+                        typeM  :$('#typeM' + x).val(),
+                        price  :$('#price' + x).val(),
                     }
-                }).done(function(){
-                    window.location = "../bockings/bockingFinal.php";
+                }).done(function(info){
+                    var data = $.parseJSON(info)
+                    if(data[0].status != 100){
+                        alert(data[0].message)
+                    }
+                    else{
+                        $.ajax({
+                            type: "POST",
+                            url: "../../printer/dashboard/bocking.php",
+                            async:false,
+                            data:{
+                                billId : data[0].billId,
+                                status : 2
+                            },
+                            success: function(data) {
+                                $(data).printThis({
+                                    debug: false,               // show the iframe for debugging
+                                    importCSS: true,            // import parent page css
+                                    importStyle: true,         // import style tags
+                                    printContainer: true,       // print outer container/$.selector
+                                    loadCSS: "",                // path to additional css file - use an array [] for multiple
+                                    pageTitle: "",              // add title to print page
+                                    removeInline: false,        // remove inline styles from print elements
+                                    removeInlineSelector: "*",  // custom selectors to filter inline styles. removeInline must be true
+                                    printDelay: 333,            // variable print delay
+                                    header: null,               // prefix to html
+                                    footer: null,               // postfix to html
+                                    base: false,                // preserve the BASE tag or accept a string for the URL
+                                    formValues: true,           // preserve input/form values
+                                    canvas: false,              // copy canvas content
+                                    doctypeString: '...',       // enter a different doctype for older markup
+                                    removeScripts: false,       // remove script tags from print content
+                                    copyTagClasses: false,      // copy classes from the html & body tag
+                                    beforePrintEvent: null,     // function for printEvent in iframe
+                                    beforePrint: null,          // function called before iframe is filled
+                                    afterPrint: function(){
+                                        window.location = "../bockings/bockingFinal.php";
+                                    }
+                                })
+                            }
+                        })
+                    }
                 })
             }
         }

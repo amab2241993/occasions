@@ -1,55 +1,53 @@
-
-<table>
-<thead>
-<tr class="text-center" style="background:gray">
-<td>#</td><td>الصنف</td><td>الكمية</td><td>سعر الوحدة</td><td>المجموع</td>
-</tr>
-</thead>
-<tbody>
-<?php
-$i=1;
-$select="select products.*,service_name,price from products inner join services on service_id=product_id 
-where bill_id='$bill_id'";
-$result= $connection->query($select);
-if ($result->num_rows > 0) {
-while($rows = $result->fetch_assoc()) {
-$total=$rows["quantity"]*$rows["price"];
-echo "<tr id=".$rows["id"]." class='text-center'><td>".$i."</td><td>".$rows["service_name"]."</td><td>".$rows["quantity"]."</td><td>".$rows["price"]."</td>
-<td class='total_php'>".$total."</td></tr>";
-$i++; 
-// $customor_id=$rows["max(customor_id)"];
-}
-}else {
-echo "0 results";
-}
-?>
-</tbody>
-</table>
-<br>
-<table>
-<thead>
-
-</thead>
-<tbody>
-<?php
-$select="select * from bills where bill_id='$bill_id'";
-$result= $connection->query($select);
-if ($result->num_rows > 0) {
-while($rows = $result->fetch_assoc()) {?>
-<tr class=""><td colspan="">اجمالي العفش: <?php echo $rows["total_afash"];?></td>
-<td colspan="">الخصم: <?php echo $rows["discount"]."% (".$rows["total_afash"]*$rows["discount"]*.01.")" ;?></td>
-<td colspan="" class=""> المبلغ : <?php echo $rows["total_afash"]-($rows["total_afash"]*$rows["discount"]*.01);?></td>
-</tr>
-<tr class=""><td colspan=""> الترحيل: <?php echo $rows["relay"] ?></td>
-<td colspan="" class=""> العمال: <?php echo $rows["empolyee_price"];?></td>
-<td colspan="" class=""> الاجمالي: <?php echo $rows["mota"];?></td>
-</tr>
-
-
-
-<?php
-}
-}
-?>
-</tbody>
-</table>
+<div class="modal fade" id='<?="ex".$index?>' tabindex="-1" role="dialog" aria-labelledby=<?="ex".$index."Label"?> aria-hidden="true">
+			<div class="modal-dialog"  role="document">
+				<div class="modal-content">
+					<div class="modal-body row">
+						<form class="row g-3 needs-validation" name="tester[]"id=<?="certain".$row["id"].""?> novalidate>
+							<input type="hidden" id="<?='move'.$row['id']?>" value=<?= $row['move_id']; ?>>
+							<input type="hidden" id="<?='money'.$row['id']?>" value=<?= $row['money']; ?>>
+							<div class="col-md-5"><h3>عملية دفع</h3></div>
+							<div class="col-md-5"></div>
+							<div class="col-md-1">
+								<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="col-md-12" style='color:white'>-</div>
+							<div class="col-md-9">
+								<label for="<?='type'.$row['id']?>" class="form-label">نوع الدفع</label>
+								<select class="form-control"  id="<?='type'.$row['id']?>" required>
+									<option selected disabled value=""></option>
+									<?php
+										foreach($accounts as $account){
+										?>
+										<option value=<?=$account['id']?>><?=$account['name']?></option>
+										<?php
+										}
+									?>
+								</select>
+								<div class="invalid-feedback">إختار طريقة الدفع من فضلك</div>
+							</div>
+							<div class="col-md-3">
+								<label for="id" class="form-label">المبلغ المدفوع</label>
+								<input type="text" disabled class="form-control" value=<?=$row['price'] - $row['money']?>>
+							</div>
+							<div class="col-md-9">
+								<label for="<?='price'.$row['id']?>" class="form-label">المبلغ</label>
+								<input type="number" class="form-control" id="<?='price'.$row['id']?>" required min=10 max="<?=$row['price'] - $row['money']?>">
+								<div class="invalid-feedback">إدخل المبلغ المطلوب من فضلك</div>
+							</div>
+							<div class="col-md-3"></div>
+							<div class="col-md-12" style='color:white'>-</div>
+							<div class="col-md-4">
+								<button type="submit" id="click[]" value = "<?=$row['id']?>" class="btn btn-primary">حفظ البيانات</button>
+							</div>
+							<div class="col-md-3"></div>
+							<div class="col-md-4">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">قفل الصفحة</button>
+							</div>
+							<div class="col-md-12" style='color:white'>-</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>

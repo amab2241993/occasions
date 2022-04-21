@@ -82,7 +82,7 @@
 					<div class="modal-content">
 						<div class="modal-body row">
 							<form class="row g-3 needs-validation" name="tester[]"id=<?="uncertain".$row["id"].""?> novalidate>
-								<input type="hidden" id=<?="res".$row["id"].""?> value=<?=$row["id"];?>>
+								<input type="hidden" id=<?="billId".$row["id"].""?> value=<?=$row["id"];?>>
 								<input type="hidden" id=<?="date".$row["id"].""?> value=<?=$row["bill_date"];?>>
 								<input type="hidden" id=<?="main".$row["id"].""?> value=<?= $row["counter"];?>>
 								<div class="col-5 mt-2"><h3>عملية دفع</h3></div>
@@ -91,6 +91,18 @@
 									<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
+								</div>
+								<div class="col-4 mt-2">
+									<label for="id" class="form-label">الإجمالي:</label>
+									<span><?=$row['price']?></span>
+								</div>
+								<div class="col-4 mt-2">
+									<label for="id" class="form-label">المدفوع:</label>
+									<span>0</span>
+								</div>
+								<div class="col-4 mt-2">
+									<label for="id" class="form-label">المتبقي:</label>
+									<span><?=$row['price']?></span>
 								</div>
 								<div class="col-9 mt-2">
 									<label for="<?='type'.$row['id']?>" class="form-label">نوع الدفع</label>
@@ -106,10 +118,7 @@
 									</select>
 									<div class="invalid-feedback">إختار طريقة الدفع من فضلك</div>
 								</div>
-								<div class="col-3 mt-2">
-									<label for="id" class="form-label">المبلغ المدفوع</label>
-									<span><?=$row['price']?></span>
-								</div>
+								<div class="col-3 mt-2"></div>
 								<div class="col-9 mt-2">
 									<label for="<?='price'.$row['id']?>" class="form-label">المبلغ</label>
 									<input type="number" class="form-control" id="<?='price'.$row['id']?>" required min=1 max="<?=$row['price']?>">

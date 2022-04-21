@@ -4,6 +4,7 @@
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		try {
 			$con->beginTransaction();
+			$billId    = $_POST['billId'];
 			$move      = $_POST['move'];
 			$type 	   = $_POST['type'];
 			$price	   = $_POST['price'];
@@ -29,10 +30,21 @@
 				'zmove'       => $move,
 				'zaccount_id' => $accountId,
 			));
+			$result = array(
+				["message"=>"success" ,
+				"billId" => $billId,
+				"status"=>100]
+			);
+			echo json_encode($result);
 			$con->commit();
 		} catch(PDOExecption $e) {
 			$con->rollback();
-			print "Error!: " . $e->getMessage() . "</br>";
+			$result = array(
+				["message"=>"خطأ فى البيانات" ,
+				"billId" => $billId,
+				"status"=>101]
+			);
+			echo json_encode($result);
 		}
 	}
 ?>

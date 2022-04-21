@@ -47,12 +47,31 @@
 					'zdetail'	  => $detail,
 					'zbillType'	  => $billType
 				));
+				$result = array(
+					["message"=>"success" ,
+					"billId" => $con->lastInsertId() ,
+					"status"=>100]
+				);
+				echo json_encode($result);
 			}
-			else {$con->rollback();}
+			else {
+				$con->rollback();
+				$result = array(
+					["message"=>"خطأ فى البيانات" ,
+					"billId" => $con->lastInsertId() ,
+					"status"=>101]
+				);
+				echo json_encode($result);
+			}
 			$con->commit();
 		} catch(PDOExecption $e) {
 			$con->rollback();
-			print "Error!: " . $e->getMessage() . "</br>";
+			$result = array(
+				["message"=>"خطأ فى البيانات" ,
+				"billId" => $con->lastInsertId() ,
+				"status"=>101]
+			);
+			echo json_encode($result);
 		}
 	}
 ?>

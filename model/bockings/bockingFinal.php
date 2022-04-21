@@ -4,7 +4,7 @@
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		try {
 			$con->beginTransaction();
-			$res   	   = $_POST['res'];
+			$billId    = $_POST['billId'];
 			$main      = $_POST['main'];
 			$type 	   = $_POST['type'];
 			$typeM	   = $_POST['typeM'];
@@ -13,7 +13,6 @@
 			$idE       = 4; // رقم المصروفات
 			$idAA      = 12; // رقم الحجوزات
 			$idEE      = 20; // رقم مصاريف فواتير
-			
 			$stmt = $con->prepare("SELECT COUNT(*) FROM bills WHERE status = 2");
 			$stmt->execute();
 			$numRow = $stmt->fetchColumn() + 1;
@@ -56,7 +55,7 @@
 			$admin			= 0;
 			$warehouse		= 0;
 			$total          = 0;
-			$stmt =$con->prepare("SELECT id , details , code , price FROM bills WHERE id = $res LIMIT 1");
+			$stmt =$con->prepare("SELECT id , details , code , price FROM bills WHERE id = $billId LIMIT 1");
 			$stmt->execute();
 			$bill = $stmt->fetch();
 			$billCode = $bill['code'];
@@ -116,11 +115,11 @@
 			if($stmt->rowCount() == 1){
 				$idM = $con->lastInsertId();
 				$stmt = $con->prepare(
-					"INSERT INTO bill_expense(bill_id , main_id , tent , decoration , electricity , service ,
-					 administrative , admin , warehouse , total) VALUES(:zbill , :zmain , :ztent , :zdecoration ,
-					 :zelectricity , :zservice , :zadministrative , :zadmin , :zwarehouse , :ztotal)"
+					"INSERT INTO bill_expense(bill_id , main_id , tent , decoration , electricity ,
+					 service , administrative , admin , warehouse , total)
+					 VALUES(:zbill , :zmain , :ztent , :zdecoration , :zelectricity , :zservice ,
+					 :zadministrative , :zadmin , :zwarehouse , :ztotal)"
 				);
-				echo $bill['id'];
 				$stmt->execute(array(
 					'zbill'  		  => $bill['id'],
 					'zmain'			  => $idM,
@@ -163,9 +162,8 @@
 					'zaccount_id' => $idEE,
 				));
 			}
-			$stmt = $con->prepare("UPDATE bills SET status = 2 , code = $numRow WHERE id = $res");
+			$stmt = $con->prepare("UPDATE bills SET status = 2 , code = $numRow WHERE id = $billId");
 			$stmt->execute();
-			
 			$stmt = $con->prepare("SELECT id , code FROM bills WHERE code > $billCode AND status = 1 ORDER BY code ASC");
 			$stmt->execute();
 			$codes = $stmt->fetchAll();
@@ -177,10 +175,21 @@
 					$stmt->execute();
 				}
 			}
+			$result = array(
+				["message"=>"success" ,
+				"billId" => $billId,
+				"status"=>100]
+			);
+			echo json_encode($result);
 			$con->commit();
 		}catch(PDOExecption $e) {
 			$con->rollback();
-			print "Error!: " . $e->getMessage() . "</br>";
+			$result = array(
+				["message"=>"خطأ فى البيانات" ,
+				"billId" => $billId,
+				"status"=>101]
+			);
+			echo json_encode($result);
 		}
 	}
 ?>

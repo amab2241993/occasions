@@ -5,17 +5,30 @@
 		$pageTitle = 'bocking';
 		$getH3 = 'حجز فاتورة';
 		include '../../init.php';
-		?><script src="<?php echo $controller ?>bockings/bocking.js"></script><?php
+		?><script src="<?php echo $controller ?>dashboard/bocking.js"></script><?php
 		include $tpl . 'navbar.php';
 		$stmt = $con->prepare("SELECT * FROM services WHERE parent_id <=> NULL ORDER BY id ASC");
 		$stmt->execute();
 		$services = $stmt->fetchAll();
 		/* Start bocking Page */
 	?>
+	<div class="bills">
+		رقم الفاتورة:
+		<span>
+			<?php
+				$stmt = $con->prepare("SELECT COUNT(*) FROM bills WHERE status = 1");
+				$stmt->execute();
+				$numRow = $stmt->fetchColumn() + 1;
+				echo $numRow;
+			?>
+		</span>
+		التاريخ:
+		<span><?=date('d-m-Y')." "?></span>
+	</div>
 	<h2>احجز موعدك</h2>
 	<form class="row g-3 needs-validation" id="bocking" novalidate>
-		<input type="hidden" value="<?php echo $_GET["date"] ?>" id="date">
-		<input type="hidden" value="<?php echo count($services) ?>" id="remember">
+		<input type="hidden" value="<?php echo $_GET["date"] ?>" id="date" />
+		<input type="hidden" value="<?php echo count($services) ?>" id="remember" />
 		<div class="col-3 mb-2 mt-4">
 			<select class="form-control" id="type" required>
 				<option selected value=1>عميل</option>
@@ -46,7 +59,7 @@
 			<div class="invalid-feedback">إختار الخدمة من فضلك</div>
 		</div>
 		<div class="col-3 mb-2">
-			<input type="text" class="form-control" value="" id="quantity" required>
+			<input type="number" class="form-control" value="" id="quantity" required min=1>
 			<div class="invalid-feedback">إدخل الكمية من فضلك</div>
 		</div>
 		<div class="col-1 mb-2">
@@ -55,7 +68,7 @@
 		<div class="col-5 mb-2"></div>
 	</form>
 	<table class='table'>
-		<thead>
+		<thead class="tableStyle">
 			<tr>
 				<th scope="col-1 mb-2">رقم الصنف</th>
 				<th scope="col-1 mb-2">الصنف</th>
@@ -153,8 +166,8 @@
 		include $tpl . 'footer.php';
 	// }
 	// else{
-	// 	header('Location:../../index.php');
-	// 	exit();
+		// 	header('Location:../../index.php');
+		// 	exit();
 	// }
 	ob_end_flush();
 ?>

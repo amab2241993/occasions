@@ -55,7 +55,7 @@
 				<div class="invalid-feedback">إختار الخدمة من فضلك</div>
 			</div>
 			<div class="col-3 mb-2">
-				<input type="text" class="form-control" value="" id="quantity" required>
+			<input type="number" class="form-control" value="" id="quantity" required min=1>
 				<div class="invalid-feedback">إدخل الكمية من فضلك</div>
 			</div>
 			<div class="col-1 mb-2">

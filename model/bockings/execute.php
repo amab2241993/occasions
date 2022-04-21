@@ -19,7 +19,7 @@
 			$move = $stmt->fetch();
 			
 			$stmt = $con->prepare(
-				"SELECT account_id , creditor FROM move_line_fake WHERE move_fake_id = ? AND creditor != 0"
+				"SELECT account_id , creditor , debtor FROM move_line_fake WHERE move_fake_id = ?"
 			);
 			$stmt->execute(array($move['id']));
 			$moveLines = $stmt->fetchAll();
@@ -35,26 +35,34 @@
 			));
 			
 			$lastId = $con->lastInsertId();
+			$accId = 0;
 			foreach($moveLines as $moveLine){
-				$stmt = $con->prepare(
-					"INSERT INTO move_line(creditor , move_id , account_id)
-					 VALUES(:zcreditor , :zmove , :zaccount_id)"
-				);
-				$stmt->execute(array(
-					'zcreditor'   => $moveLine['creditor'],
-					'zmove'       => $lastId,
-					'zaccount_id' => $moveLine['account_id'],
-				));
-				
-				$stmt = $con->prepare(
-					"INSERT INTO move_line(debtor , move_id , account_id)
-					 VALUES(:zdebtor , :zmove , :zaccount_id)"
-				);
-				$stmt->execute(array(
-					'zdebtor'     => $moveLine['creditor'],
-					'zmove'       => $lastId,
-					'zaccount_id' => $idAA,
-				));
+				if($moveLine['account_id'] == 6  || $moveLine['account_id'] == 7){
+					$accId = $moveLine['account_id'];
+				}
+				else{
+					$stmt = $con->prepare(
+						"INSERT INTO move_line(creditor , debtor ,move_id , account_id)
+							VALUES(:zcreditor , :zdebtor ,:zmove , :zaccId)"
+					);
+					$stmt->execute(array(
+						'zcreditor' => $moveLine['debtor'],
+						'zdebtor'   => $moveLine['creditor'],
+						'zmove'     => $lastId,
+						'zaccId'    => $accId
+					));
+					
+					$stmt = $con->prepare(
+						"INSERT INTO move_line(creditor , debtor ,move_id , account_id)
+							VALUES(:zcreditor , :zdebtor ,:zmove , :zaccId)"
+					);
+					$stmt->execute(array(
+						'zcreditor'	=> $moveLine['creditor'],
+						'zdebtor'	=> $moveLine['debtor'],
+						'zmove'		=> $lastId,
+						'zaccId'	=> $moveLine['account_id']
+					));
+				}
 			}
 			
 			$stmt = $con->prepare("DELETE FROM move_fake WHERE main_id = ?");
