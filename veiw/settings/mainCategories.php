@@ -4,6 +4,8 @@
 	if (isset($_SESSION['user_name'])) {
 		$pageTitle = 'Dashboard';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>settings/mainCategories.js"></script><?php
+		include $tpl . 'navbar.php';
 		$stmt = $con->prepare("SELECT id , name FROM stores ORDER BY id");
 		$stmt->execute();
 		$stores = $stmt->fetchAll();
@@ -139,10 +141,6 @@
 	<?php
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>settings/mainCategories.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location:../../index.php');

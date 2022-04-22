@@ -31,40 +31,22 @@
 			);
 			$stmt->execute();
 			$money = $stmt->fetch();
-			$stmt1 = $con->prepare("SELECT * FROM bill_refund WHERE bill_id = $billId LIMIT 1");
-			$stmt1->execute();
-			$refund = $stmt1->fetch();
-			if($stmt1->rowCount() > 0){
-				if(intval($money['price']) <= $price){
-					$stmt = $con->prepare("DELETE FROM bill_refund WHERE bill_id = $billId");
-					$stmt->execute();
-				}
-				else{
-					$stmt = $con->prepare(
-						"UPDATE bill_refund SET amount_paid = ? , amount_total = ? , refund = ?
-						 WHERE bill_id = ?"
-					);
-					$stmt->execute(array(
-						$money['price'] , $price , (intval($money['price']) - intval($price)) , $billId
-					));
-
-				}
+			$stmt = $con->prepare(
+				"SELECT refund , pay FROM bill_refund WHERE bill_id = $billId LIMIT 1"
+			);
+			$stmt->execute();
+			$refund = $stmt->fetch();
+			$all = 0;
+			if((intval($money['price'])  - intval($refund['pay'])) > $price){
+				$all = intval($money['price']) -(intval($refund['pay']) + $price);
 			}
-			else{
-				if(intval($money['price']) > $price){
-					$stmt = $con->prepare(
-						"INSERT  INTO bill_refund(amount_paid , amount_total , refund , bill_id)
-						 VALUES(:zamountPaid , :zamountTotal , :zrefund , :zbillId)"
-					);
-					$stmt->execute(array(
-						'zamountPaid'  => $money['price'] ,
-						'zamountTotal' => $price ,
-						'zrefund'      => (intval($money['price']) - intval($price)) , 
-						'zbillId' 	   => $billId
-					));
-
-				}
-			}
+			$stmt = $con->prepare(
+				"UPDATE bill_refund SET amount_paid = ? , amount_total = ? , refund = ?
+				 WHERE bill_id = ?"
+			);
+			$stmt->execute(array(
+				(intval($money['price']) - intval($refund['pay'])) , $price , $all , $billId
+			));
 			$result = array(
 				["message"=>"success" ,
 				"billId" => $billId,

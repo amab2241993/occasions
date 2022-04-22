@@ -47,18 +47,64 @@
 					'zdetail'	  => $detail,
 					'zbillType'	  => $billType
 				));
-				$result = array(
-					["message"=>"success" ,
-					"billId" => $con->lastInsertId() ,
-					"status"=>100]
-				);
-				echo json_encode($result);
+				if($stmt->rowCount() == 1){
+					$billId = $con->lastInsertId();
+					$stmt = $con->prepare(
+						"INSERT INTO main()VALUES()"
+					);
+					$stmt->execute();
+						if($stmt->rowCount() == 1){
+							$stmt = $con->prepare(
+							"INSERT INTO bill_refund(bill_id , main_id)VALUES(:zbillId , :zmainId)"
+						);
+						$stmt->execute(array(
+							'zbillId' => $billId,
+							'zmainId' => $con->lastInsertId(),
+						));
+						
+						if($stmt->rowCount() == 1){
+							$result = array(
+								["message"=>"success",
+								"billId" => $billId,
+								"status"=>100]
+							);
+							echo json_encode($result);
+						}
+						else{
+							$con->rollback();
+							$result = array(
+								["message"=>"خطأ فى البيانات" ,
+								"billId" => $billId,
+								"status"=>101]
+							);
+							echo json_encode($result);
+						}
+					}
+					else{
+						$con->rollback();
+						$result = array(
+							["message"=>"خطأ فى البيانات" ,
+							"billId" => $billId,
+							"status"=>101]
+						);
+						echo json_encode($result);
+					}
+				}
+				else{
+					$con->rollback();
+					$result = array(
+						["message"=>"خطأ فى البيانات" ,
+						"billId" => $billId,
+						"status"=>101]
+					);
+					echo json_encode($result);
+				}
 			}
 			else {
 				$con->rollback();
 				$result = array(
 					["message"=>"خطأ فى البيانات" ,
-					"billId" => $con->lastInsertId() ,
+					"billId" => $billId,
 					"status"=>101]
 				);
 				echo json_encode($result);
@@ -68,7 +114,7 @@
 			$con->rollback();
 			$result = array(
 				["message"=>"خطأ فى البيانات" ,
-				"billId" => $con->lastInsertId() ,
+				"billId" => $billId,
 				"status"=>101]
 			);
 			echo json_encode($result);

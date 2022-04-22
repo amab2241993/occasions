@@ -84,7 +84,7 @@
                 </div>
                 <div class=" bill_number">
                     <?php
-                        echo "فاتورة رقم".$row["status"];
+                        echo "فاتورة رقم".$row["code"];
                     ?>
                 </div>
                 <div class=" time">

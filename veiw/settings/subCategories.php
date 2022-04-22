@@ -4,6 +4,8 @@
 	if (isset($_SESSION['user_name'])) {
 		$pageTitle = 'Dashboard';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>settings/subCategories.js"></script><?php
+		include $tpl . 'navbar.php';
 		$stmt = $con->prepare("SELECT * FROM services WHERE parent_id <=> NULL");
 		$stmt->execute();
 		$rows = $stmt->fetchAll();
@@ -64,10 +66,6 @@
 	<?php
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>settings/subCategories.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location:../../index.php');

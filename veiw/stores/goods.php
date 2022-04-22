@@ -5,6 +5,8 @@
 		$pageTitle = 'goods';
 		$getH3     = 'بضاعة أول مدة';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>stores/goods.js"></script><?php
+		include $tpl . 'navbar.php';
 		$stmt = $con->prepare("SELECT id , name FROM stores ORDER BY id ASC");
 		$stmt->execute();
 		$rows = $stmt->fetchAll();
@@ -71,10 +73,6 @@
 	<?php
 		/* End bocking Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>stores/goods.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location:../../index.php');

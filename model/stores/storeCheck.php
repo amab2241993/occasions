@@ -20,7 +20,9 @@
 						$tester = true;
 					}
 				}
-				if($tester){unset($rows[$key]);}
+				if($tester){
+					unset($rows[$key]);
+				}
 			}
 			echo json_encode($rows);
 		} catch(PDOExecption $e) {

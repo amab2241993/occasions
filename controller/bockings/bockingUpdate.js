@@ -38,7 +38,7 @@ $(function () {
         }
     })
     $("#services").on('change',function(){
-        var next = $("input").eq(4);
+        var next = $("input").eq(4)
         next.focus()
     })
     $('#bocking').submit(function(data){
@@ -216,7 +216,7 @@ $(function () {
         $("#remaining").val(discount)
         $("#total").text(count)
     })
-    $('input[name="quantities[]"]').on('keyup' , function(){
+    $('body').on('keyup' , 'input[name="quantities[]"]' , function(){
         var index        = $('input[name="quantities[]"]').index(this)
         var quantityHide = $('#quantityHide' + index).val()
         var quantity     = $('#quantities'      + index).val()
@@ -296,7 +296,7 @@ $(function () {
         }
         $('#discount').val(discountOld)
     })
-    $('.delete').on('click' , function(){
+    $('body').on('click' , '.delete' , function(){
         var index        = $('.delete').index(this)
         var priceWorkers = $('#price_workers'   + index).text()
         var totalUnits   = $('#total_units'     + index).text()
@@ -344,12 +344,12 @@ $(function () {
         if($('input[name="quantities[]"]').length == 0){
             $('#bockingUpdate').hide()
             $('table').hide()
-            // if($("#type").is(':disabled')){
-            //     $("#type").attr({"disabled" : false})
-            // }
-            // if($("#customer").is(':disabled')){
-            //     $("#customer").attr({"disabled" : false})
-            // }
+            if($("#type").is(':disabled')){
+                $("#type").attr({"disabled" : false})
+            }
+            if($("#customer").is(':disabled')){
+                $("#customer").attr({"disabled" : false})
+            }
         }
     })
     $('#bockingUpdate').submit(function(data){

@@ -12,14 +12,13 @@
 		$accounts = $stmt->fetchAll();
 		if(isset($_GET['date'])){
 			$stmt = $con->prepare(
-				"SELECT bills.* ,
-				 customers.name AS customer_name ,
-				 main.id AS counter ,
-				 move_fake.id AS move_id , move_fake.price AS money 
-				 FROM bills
+				"SELECT bills.* , customers.name AS customer_name ,
+				 main.id AS counter , move_fake.id AS move_id , move_fake.price AS money ,
+				 bill_refund.refund , bill_refund.pay FROM bills
 				 INNER JOIN customers ON bills.customer_id =customers.id
 				 INNER JOIN main ON bills.main_id = main.id
 				 INNER JOIN move_fake ON main.id = move_fake.main_id
+				 INNER JOIN bill_refund ON bills.id = bill_refund.bill_id
 				 WHERE bills.status = ? AND bills.bill_date = ? ORDER BY bills.code DESC"
 			);
 			$stmt->execute(array(3,$_GET['date']));
@@ -27,14 +26,13 @@
 		}
 		else{
 			$stmt = $con->prepare(
-				"SELECT bills.* ,
-				 customers.name AS customer_name ,
-				 main.id AS counter ,
-				 move_fake.id AS move_id , move_fake.price AS money
-				 FROM bills
+				"SELECT bills.* , customers.name AS customer_name ,
+				 main.id AS counter , move_fake.id AS move_id , move_fake.price AS money ,
+				 bill_refund.refund , bill_refund.pay FROM bills
 				 INNER JOIN customers ON bills.customer_id =customers.id
 				 INNER JOIN main ON bills.main_id = main.id
 				 INNER JOIN move_fake ON main.id = move_fake.main_id
+				 INNER JOIN bill_refund ON bills.id = bill_refund.bill_id
 				 WHERE bills.status = 3 ORDER BY bills.code DESC"
 			);
 			$stmt->execute();
@@ -51,10 +49,11 @@
 					<th scope="col-1">عدد الأيام</th>
 					<th scope="col-1">المبلغ الكلي</th>
 					<th scope="col-1">الخصم</th>
-					<th scope="col-1">المبلغ النهائى</th>
+					<th scope="col-2">المبلغ النهائى</th>
 					<th scope="col-1">المدفوع</th>
 					<th scope="col-1">المتبقي</th>
-					<th scope="col-3">التحكم</th>
+					<th scope="col-1">مطلوب</th>
+					<th scope="col-1">التحكم</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -62,7 +61,9 @@
 					if (! empty($rows)){
 						$count = 0;
 						foreach($rows as $row){
-							++$count
+							++$count;
+							$return =  (intval($row['price']) + intval($row['refund']));
+							$return -= (intval($row['money']) - intval($row['pay']));
 						?>
 						<tr>
 							<td scope="col-1">
@@ -73,21 +74,22 @@
 							<td scope="col-1"><?= $row['num_days']; ?></td>
 							<td scope="col-1"><?= $row['total_price']; ?></td>
 							<td scope="col-1"><?= $row['discount']; ?></td>
-							<td scope="col-1"><?= $row['price']; ?></td>
-							<td scope="col-1"><?= $row['money']?></td>
-							<td scope="col-1"><?= $row['price'] - $row['money']?></td>
+							<td scope="col-2"><?= $row['price']; ?></td>
+							<td scope="col-1"><?= $row['money'] - $row['pay']?></td>
+							<td scope="col-1"><?= $return?></td>
+							<td scope="col-1"><?= $row['refund']?></td>
 							<?php
-								if(intval($row['price']) - intval($row['money']) <= 0){
+								if($return <= 0){
 								?>
-								<td scope="col-3" id=<?=$row['counter']?> code=<?=$row['code']?> status=<?=$row['status']?>>
-									<button type='button' class="execute">تنفيذ</button>
+								<td scope="col-1" id=<?=$row['counter']?> code=<?=$row['code']?> status=<?=$row['status']?>>
+									<button type='button' billId=<?=$row['id']?> class="execute">تنفيذ</button>
 									<i class='fa fa-remove deleteBocking'>
 								</td>
 								<?php
 								}
 								else{
 								?>
-								<td scope="col-3" id=<?=$row['counter']?> code=<?=$row['code']?> status=<?=$row['status']?>>
+								<td scope="col-1" id=<?=$row['counter']?> code=<?=$row['code']?> status=<?=$row['status']?>>
 									<button type='button' data-toggle='modal' data-target='<?="#ex".$count?>'>أكمل الدفع</button>
 									<button type='button' class="execute">تنفيذ</button>
 									<i class='fa fa-remove deleteBocking'>
@@ -105,6 +107,8 @@
 		<?php
 		$index = 1;
 		foreach($rows as $row){
+			$return =  (intval($row['price']) + intval($row['refund']));
+			$return -= (intval($row['money']) - intval($row['pay']));
 		?>
 		<!-- ******************** model **************************** -->
 			<div class="modal fade" id='<?="ex".$index?>' tabindex="-1" role="dialog" aria-labelledby=<?="ex".$index."Label"?> aria-hidden="true">
@@ -128,11 +132,11 @@
 								</div>
 								<div class="col-4 mt-2">
 									<label for="id" class="form-label">المدفوع:</label>
-									<span><?=$row['money']?></span>
+									<span><?=$row['money'] - $row['pay']?></span>
 								</div>
 								<div class="col-4 mt-2">
 									<label for="id" class="form-label">المتبقي:</label>
-									<span><?=$row['price'] - $row['money']?></span>
+									<span><?=$return?></span>
 								</div>
 								<div class="col-9 mt-2">
 									<label for="<?='type'.$row['id']?>" class="form-label">نوع الدفع</label>
@@ -151,12 +155,12 @@
 								<div class="col-3 mt-2"></div>
 								<div class="col-9 mt-2">
 									<label for="<?='price'.$row['id']?>" class="form-label">المبلغ</label>
-								<input type="number" class="form-control" id="<?='price'.$row['id']?>" required min=10 max="<?=$row['price'] - $row['money']?>">
+									<input type="number" class="form-control" id="<?='price'.$row['id']?>" required min=10 max="<?=$return?>">
 									<div class="invalid-feedback">إدخل المبلغ المطلوب من فضلك</div>
 								</div>
 								<div class="col-3 mt-2"></div>
 								<div class="col-4 mt-2 mb-2">
-								<button type="submit" id="click[]" value = "<?=$row['id']?>" class="btn btn-primary">حفظ البيانات</button>
+									<button type="submit" id="click[]" value = "<?=$row['id']?>" class="btn btn-primary">حفظ البيانات</button>
 								</div>
 								<div class="col-3 mt-2 mb-2"></div>
 								<div class="col-4 mt-2 mb-2">
@@ -214,6 +218,7 @@
 						<input type="hidden" id="main_id" value="">
 						<input type="hidden" id="mainCode" value="">
 						<input type="hidden" id="mainStatus" value="">
+						<input type="hidden" id="billId" value="">
 						<div class="col-5 mt-2"><h3>المصروفات</h3></div>
 						<div class="col-5 mt-2"></div>
 						<div class="col-1 mt-2">

@@ -147,6 +147,7 @@ CREATE TABLE `bill_refund` (
   `amount_paid`  int(11) UNSIGNED NOT NULL DEFAULT 0,
   `amount_total` int(11) UNSIGNED NOT NULL DEFAULT 0,
   `refund`       int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `pay`          int(11) UNSIGNED NOT NULL DEFAULT 0,
   `created_at`   timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at`   timestamp NOT NULL DEFAULT current_timestamp(),
                  UNIQUE KEY(`bill_id`),

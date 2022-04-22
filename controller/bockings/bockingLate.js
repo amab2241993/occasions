@@ -130,9 +130,11 @@ $(function () {
         var mainId = $(this).parent().attr("id")
         var code   = $(this).parent().attr("code")
         var status = $(this).parent().attr("status")
+        var billId = $(this).attr("billId")
         $('#main_id').val(mainId)
         $('#mainCode').val(code)
         $('#mainStatus').val(status)
+        $('#billId').val(billId)
         $('#execute').modal('show')
     })
     $("#executeForm").on('submit',function(data){
@@ -146,11 +148,12 @@ $(function () {
                     mainId : $('#main_id').val(),
                     code   : $('#mainCode').val(),
                     status : $('#mainStatus').val(),
+                    billId : $('#billId').val(),
                     type   : $('#expenses').val()
                 }
             }).done(function(){
                     alert("تم التنفيذ بنجاح")
-                    window.location.reload();
+                    // window.location.reload();
             })
         }
     })
