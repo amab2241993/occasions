@@ -30,17 +30,17 @@
 		}
 		/* Start Dashboard Page */
 	?>
-	<table id="first" class="table table-striped table-bordered">
+	<table id="first" class="table table-striped table-bordered text-center">
 		<thead class='tableStyle'>
 			<tr>
-				<th scope="col-1">رقم الحجز</th>
-				<th scope="col-2">تاريخ الحجز</th>
-				<th scope="col-2">اسم العميل</th>
-				<th scope="col-1">عدد الأيام</th>
-				<th scope="col-2">المبلغ الكلي</th>
-				<th scope="col-1">الخصم</th>
-				<th scope="col-2">المبلغ النهائى</th>
-				<th scope="col-1">التحكم</th>
+				<th class="col-1">رقم الحجز</th>
+				<th class="col-2">تاريخ الحجز</th>
+				<th class="col-2">اسم العميل</th>
+				<th class="col-1">عدد الأيام</th>
+				<th class="col-2">المبلغ الكلي</th>
+				<th class="col-1">الخصم</th>
+				<th class="col-2">المبلغ النهائى</th>
+				<th class="col-1">التحكم</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -51,16 +51,16 @@
 						++$count
 					?>
 					<tr>
-						<td scope="col-1">
+						<td class="col-1">
 							<a href=<?="bockingUpdate.php?bill=".$row['code']."&&status=1"?>><?= $row['code']; ?></a>
 						</td>
-						<td scope="col-2"><?= $row['bill_date']; ?></td>
-						<td scope="col-2"><?= $row['customer_name']; ?></td>
-						<td scope="col-1"><?= $row['num_days']; ?></td>
-						<td scope="col-2"><?= $row['total_price']; ?></td>
-						<td scope="col-1"><?= $row['discount']; ?></td>
-						<td scope="col-2"><?= $row['price']; ?></td>
-						<td scope="col-1" id=<?=$row['counter']?> code=<?=$row['code']?> status=<?=$row['status']?>>
+						<td class="col-2"><?= $row['bill_date']; ?></td>
+						<td class="col-2"><?= $row['customer_name']; ?></td>
+						<td class="col-1"><?= $row['num_days']; ?></td>
+						<td class="col-2"><?= $row['total_price']; ?></td>
+						<td class="col-1"><?= $row['discount']; ?></td>
+						<td class="col-2"><?= $row['price']; ?></td>
+						<td class="col-1" id=<?=$row['counter']?> code=<?=$row['code']?> status=<?=$row['status']?>>
 							<button type='button' data-toggle='modal' data-target='<?="#ex".$count?>'>تأكيد</button>
 							<i class='fa fa-remove deleteBocking'>
 						</td>

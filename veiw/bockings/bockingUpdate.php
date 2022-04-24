@@ -64,17 +64,17 @@
 			<div class="col-5 mb-2"></div>
 		</form>
 		<div class="col-12 mb-2">
-			<table class='table'>
+			<table class='table table-bordered text-center'>
 				<thead class='tableStyle'>
 					<tr>
 						<th class="col-1 mb-2">رقم</th>
 						<th class="col-1 mb-2">الصنف</th>
 						<th class="col-1 mb-2">الكمية</th>
 						<th class="col-2 mb-2">سعر الوحدة</th>
-						<th scope="col-2 mb-2">سعر العامل</th>
-						<th scope="col-2 mb-2">سعر العمال</th>
+						<th class="col-2 mb-2">سعر العامل</th>
+						<th class="col-2 mb-2">سعر العمال</th>
 						<th class="col-2 mb-2">سعر العفش</th>
-						<th class="col-1 mb-2"></th>
+						<th class="col-1 mb-2">خذف</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -83,28 +83,28 @@
 						foreach($jsons as $json){
 						?>
 						<tr>
-							<td scope="col-1 mb-2" name="id_numbers[]" id=<?="id_numbers" . $i?>><?=$json->serviceId?></td>
-							<td scope="col-1 mb-2" name="item[]" id=<?="item" . $i ?>><?=$json->serviceName?></td>
-							<td scope="col-1 mb-2" style="width:15%">
+							<td class="col-1 mb-2" name="id_numbers[]" id=<?="id_numbers" . $i?>><?=$json->serviceId?></td>
+							<td class="col-1 mb-2" name="item[]" id=<?="item" . $i ?>><?=$json->serviceName?></td>
+							<td class="col-1 mb-2" style="width:15%">
 								<input class='form-control' type='number' name='quantities[]' id=<?='quantities' . $i?> value=<?=$json->quantity?>>
 							</td>
 							<td scope="col-2 mb-2" name="price_unit[]"    id=<?='price_unit'    . $i?>><?=$json->priceUnit?></td>
 							<?php
 								if($bill['bill_type'] == 3){
 								?>
-								<td scope="col-2 mb-2" name="price_worker[]"  id=<?='price_worker'  . $i?>>0</td>
-								<td scope="col-2 mb-2" name="price_workers[]" id=<?='price_workers' . $i?>>0</td>
+								<td class="col-2 mb-2" name="price_worker[]"  id=<?='price_worker'  . $i?>>0</td>
+								<td class="col-2 mb-2" name="price_workers[]" id=<?='price_workers' . $i?>>0</td>
 								<?php
 								}
 								else{
 								?>
-								<td scope="col-2 mb-2" name="price_worker[]"  id=<?='price_worker'  . $i?>><?=$json->priceWorker?></td>
-								<td scope="col-2 mb-2" name="price_workers[]" id=<?='price_workers' . $i?>><?=$json->priceWorkers?></td>
+								<td class="col-2 mb-2" name="price_worker[]"  id=<?='price_worker'  . $i?>><?=$json->priceWorker?></td>
+								<td class="col-2 mb-2" name="price_workers[]" id=<?='price_workers' . $i?>><?=$json->priceWorkers?></td>
 								<?php
 								}
 							?>
-							<td scope="col-2 mb-2" name="total_units[]"   id=<?='total_units'   . $i?>><?=$json->totalUnits?></td>
-							<td scope="col-1 mb-2" name="delete[]"        id=<?='delete' .$i?>><i class='fa fa-remove delete'></td>
+							<td class="col-2 mb-2" name="total_units[]"   id=<?='total_units'   . $i?>><?=$json->totalUnits?></td>
+							<td class="col-1 mb-1" name="delete[]"        id=<?='delete' .$i?>><i class='fa fa-remove delete'></td>
 						</tr>
 						<?php
 							$i++;

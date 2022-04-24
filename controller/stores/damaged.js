@@ -20,8 +20,9 @@ $(function () {
             $('#item').append(`<option disabled selected value="">${'إختار الصنف'}</option>`)
             $.each(data, function(index){
                 $('#item').append(
-                    `<option value=${data[index].id} worker=${data[index].worker_id}
-                     quantity=${data[index].quantity}>${data[index].name}</option>`
+                    `<option value=${data[index].id} parentId=${data[index].parent_id}
+                     worker=${data[index].worker_id} quantity=${data[index].quantity}>
+                     ${data[index].name}</option>`
                 )
             })
         })
@@ -42,19 +43,25 @@ $(function () {
                 $('table').show()
                 $('form').eq(1).show()
                 $(
-                    `<div class="col-4">
+                    `<div class="col-3">
+                        <input type="hidden" class="form-control"
+                        name="parentId[]" value="${$("#item").find('option:selected').attr('parentId')}">
+                    </div>`
+                ).insertBefore("#save")
+                $(
+                    `<div class="col-3">
                         <input type="hidden" class="form-control"
                         name="storeId[]"value="${$('#stores').val()}">
                     </div>`
                 ).insertBefore("#save")
                 $(
-                    `<div class="col-4">
+                    `<div class="col-3">
                         <input type="hidden" class="form-control"
                         name="itemId[]"value="${$('#item').val()}">
                     </div>`
                 ).insertBefore("#save")
                 $(
-                    `<div class="col-4">
+                    `<div class="col-3">
                         <input type="hidden" class="form-control"
                         name="workerId[]"value="${$('#item').find('option:selected').attr('worker')}">
                     </div>`
@@ -75,19 +82,25 @@ $(function () {
                 })
                 if(tester != 1){
                     $(
-                        `<div class="col-4">
+                        `<div class="col-3">
+                            <input type="hidden" class="form-control"
+                            name="parentId[]" value="${$("#item").find('option:selected').attr('parentId')}">
+                        </div>`
+                    ).insertBefore("#save")
+                    $(
+                        `<div class="col-3">
                             <input type="hidden" class="form-control"
                             name="storeId[]"value="${$('#stores').val()}">
                         </div>`
                     ).insertBefore("#save")
                     $(
-                        `<div class="col-4">
+                        `<div class="col-3">
                             <input type="hidden" class="form-control"
                             name="itemId[]"value="${$('#item').val()}">
                         </div>`
                     ).insertBefore("#save")
                     $(
-                        `<div class="col-4">
+                        `<div class="col-3">
                             <input type="hidden" class="form-control"
                             name="workerId[]"value="${$('#item').find('option:selected').attr('worker')}">
                         </div>`
@@ -116,9 +129,10 @@ $(function () {
         var x = $("tbody").children().length
         var index = $('td[name="delete[]"]').index(this)
         $('tbody > tr').eq(index).remove()
-        $('#dataTable > div').eq(index * 3 ).remove()
-        $('#dataTable > div').eq(index * 3 ).remove()
-        $('#dataTable > div').eq(index * 3 ).remove()
+        $('#dataTable > div').eq(index * 4 ).remove()
+        $('#dataTable > div').eq(index * 4 ).remove()
+        $('#dataTable > div').eq(index * 4 ).remove()
+        $('#dataTable > div').eq(index * 4 ).remove()
         if(x == 1){
             $('table').hide()
             $('form').eq(1).hide()
@@ -137,6 +151,9 @@ $(function () {
         var storeId = $('input[name="storeId[]"]').map(function(){
             return $(this).val()
         })
+        var parentId = $('input[name="parentId[]"]').map(function(){
+            return $(this).val()
+        })
         var workerId = $('input[name="workerId[]"]').map(function(){
             return $(this).val()
         })
@@ -149,6 +166,7 @@ $(function () {
             feed = {
                 "itemId"   : itemId[index],
                 "storeId"  : storeId[index],
+                "parentId" : parentId[index],
                 "workerId" : workerId[index],
                 "quantity" : quantity[index]
             }
@@ -161,7 +179,7 @@ $(function () {
             data:{details : objectA}
         }).done(function(){
             alert("تم التحويل بنجاح")
-            // window.location = "../dashboard/dashboard.php"
+            window.location.reload()
         })
     })
 })

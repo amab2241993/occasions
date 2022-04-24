@@ -40,7 +40,7 @@
 		}
 		/* Start Dashboard Page */
 		?>
-		<table id="first" class="table table-striped table-bordered">
+		<table id="first" class="table table-striped table-bordered  text-center">
 			<thead class='tableStyle'>
 				<tr>
 					<th scope="col-1">رقم الحجز</th>

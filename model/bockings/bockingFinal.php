@@ -13,9 +13,6 @@
 			$idE       = 4; // رقم المصروفات
 			$idAA      = 12; // رقم الحجوزات
 			$idEE      = 20; // رقم مصاريف فواتير
-			$stmt = $con->prepare("SELECT COUNT(*) FROM bills WHERE status = 2");
-			$stmt->execute();
-			$numRow = $stmt->fetchColumn() + 1;
 			$statment1 = "ايرادات فاتورة رقم ".$numRow;
 			$statment2 = "مصاريف فاتورة رقم ".$numRow;
 			$stmt      = $con->prepare(

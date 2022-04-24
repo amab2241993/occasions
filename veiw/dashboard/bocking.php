@@ -67,17 +67,17 @@
 		</div>
 		<div class="col-5 mb-2"></div>
 	</form>
-	<table class='table'>
+	<table class='table table-bordered text-center'>
 		<thead class="tableStyle">
 			<tr>
-				<th scope="col-1 mb-2">رقم الصنف</th>
-				<th scope="col-1 mb-2">الصنف</th>
-				<th scope="col-1 mb-2">الكمية</th>
-				<th scope="col-2 mb-2">سعر الوحدة</th>
-				<th scope="col-2 mb-2">سعر العامل</th>
-				<th scope="col-2 mb-2">سعر العمال</th>
+				<th class="col-1 mb-2">رقم الصنف</th>
+				<th class="col-1 mb-2">الصنف</th>
+				<th class="col-1 mb-2">الكمية</th>
+				<th class="col-2 mb-2">سعر الوحدة</th>
+				<th class="col-2 mb-2">سعر العامل</th>
+				<th class="col-2 mb-2">سعر العمال</th>
 				<th class="col-2 mb-2">سعر العفش</th>
-				<th scope="col-1 mb-2">خذف</th>
+				<th class="col-1 mb-2">خذف</th>
 			</tr>
 		</thead>
 		<tbody>

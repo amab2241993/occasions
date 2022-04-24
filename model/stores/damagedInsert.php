@@ -6,8 +6,17 @@
 			$con->beginTransaction();
 			$details = $_POST['details'];
 			foreach($details as $detail){
-				$quantity = $detail['quantity'];
+				$quantity  = $detail['quantity'];
 				$serviceId = $detail['itemId'];
+				$parentId  = $detail['parentId'];
+				
+				if($detail['parentId'] > 0){
+					$stmt = $con->prepare(
+						"UPDATE store_service SET quantity = quantity - $quantity
+						 WHERE store_id = ? AND service_id = ?"
+					);
+					$stmt->execute(array($detail['storeId'] , $parentId));
+				}
 
 				$stmt = $con->prepare(
 					"UPDATE store_service SET quantity = quantity - $quantity

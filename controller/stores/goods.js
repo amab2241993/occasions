@@ -207,7 +207,7 @@ $(function () {
             data:{details : objectA}
         }).done(function(){
             alert("تم التحويل بنجاح")
-            // window.location.reload()
+            window.location.reload()
         })
     })
 })

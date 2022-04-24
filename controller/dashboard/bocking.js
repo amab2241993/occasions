@@ -92,13 +92,13 @@ $(function () {
                     var totalUnitsDays   = totalUnits * parseInt(numDays)
                     var totalBaggages    = totalUnitsDays + priceWorkers
                     var html = `<tr>
-                    <td scope="col-1 mb-2" name="id_numbers[]" id="id_numbers${result}">${data.count}</td>
-                    <td scope="col-1 mb-2" name="item[]" id="item${result}">${data.name}</td>
-                    <td scope="col-1 mb-2" style="width:15%">
+                    <td class="col-1 mb-2" name="id_numbers[]" id="id_numbers${result}">${data.count}</td>
+                    <td class="col-1 mb-2" name="item[]" id="item${result}">${data.name}</td>
+                    <td class="col-1 mb-2" style="width:15%">
                     <input class='form-control'
                     type='number' name='quantities[]' id="quantities${result}" value=${quantity}>
                     </td>
-                    <td scope="col-2 mb-2" name="price_unit[]"    id="price_unit${result}">${priceUnit}</td>`
+                    <td class="col-2 mb-2" name="price_unit[]"    id="price_unit${result}">${priceUnit}</td>`
                     var form =  `<input type="hidden" name="worker[]" id="worker${result}" value=${data.worker_id}>`
                         form += `<input type="hidden" name="store[]" id="store${result}" value=${data.store_id}>`
                         form += `<input type="hidden" id="quantityHide${result}" value=${quantity}>`
@@ -115,10 +115,10 @@ $(function () {
                         $("#remaining").val(parseInt($("#remaining").val()) + totalUnitsDays)
                         $("#total").text(parseInt($("#total").text()) + totalUnitsDays)
                     }
-                    html += `<td scope="col-2 mb-2" name="price_worker[]"  id="price_worker${result}">${priceWorker}</td>
-                    <td scope="col-2 mb-2" name="price_workers[]" id="price_workers${result}">${priceWorkers}</td>
-                    <td scope="col-2 mb-2" name="total_units[]"   id="total_units${result}">${totalUnits}</td>
-                    <td scope="col-1 mb-2">
+                    html += `<td class="col-2 mb-2" name="price_worker[]"  id="price_worker${result}">${priceWorker}</td>
+                    <td class="col-2 mb-2" name="price_workers[]" id="price_workers${result}">${priceWorkers}</td>
+                    <td class="col-2 mb-2" name="total_units[]"   id="total_units${result}">${totalUnits}</td>
+                    <td class="col-1 mb-2">
                     <i class='fa fa-remove delete'>
                     </td></tr>`
                     $('tbody').append(html)

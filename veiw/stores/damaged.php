@@ -5,6 +5,8 @@
 		$pageTitle = 'damaged';
 		$getH3     = 'التحويل الى المخزن التألف';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>stores/damaged.js"></script><?php
+		include $tpl . 'navbar.php';
 		$stmt = $con->prepare("SELECT id , name FROM stores WHERE id != 4");
 		$stmt->execute();
 		$rows = $stmt->fetchAll();
@@ -66,10 +68,6 @@
 	<?php
 		/* End bocking Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>stores/damaged.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location:../../index.php');

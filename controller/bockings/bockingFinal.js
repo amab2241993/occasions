@@ -24,7 +24,7 @@ $(function () {
     $('form[name="tester[]"]').submit(function (e){
         e.preventDefault()
         x = $(this).attr('id').slice(7)
-        var form = document.getElementById("certain" + x);
+        var form = document.getElementById("certain" + x)
         if(form.checkValidity()){
             $.ajax({
                 type:'post',
@@ -90,12 +90,12 @@ $(function () {
         $('#status').val(status)
 
         if(confirm("هل انت متأكد من انك تريد الحزف")){
-            $('#passwordInter').modal('show');
+            $('#passwordInter').modal('show')
         }
     })
     $("#passowrdForm").on('submit',function(data){
         data.preventDefault()
-        var form = document.getElementById("passowrdForm");
+        var form = document.getElementById("passowrdForm")
         if(form.checkValidity()){
             $.ajax({
                 type:'post',
@@ -119,7 +119,7 @@ $(function () {
                         }
                         else{
                             alert("تم الحذف بنجاح")
-                            window.location.reload();
+                            window.location.reload()
                         }
                     })
                 }
