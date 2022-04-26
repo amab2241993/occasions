@@ -2,36 +2,43 @@
 	ob_start(); // Output Buffering Start
 	session_start();
 	// if (isset($_SESSION['user_name'])) {
-		$pageTitle = 'users';
-		$getH3     = "المستخدمين";
+		$pageTitle = 'employees';
+		$getH3     = "الموظفين";
 		include '../../init.php';
-		?><script src="<?php echo $controller ?>settings/users.js"></script><?php
+		?><script src="<?php echo $controller ?>settings/employees.js"></script><?php
 		include $tpl . 'navbar.php';
-		$stmt = $con->prepare("SELECT * FROM users ORDER BY id DESC");
+		$stmt = $con->prepare("SELECT * FROM employees ORDER BY id DESC");
 		$stmt->execute();
-		$users = $stmt->fetchAll();
+		$employees = $stmt->fetchAll();
 		/* Start Dashboard Page */
 	?>
-	<form class="row needs-validation" id="users" novalidate>
+	<form class="row needs-validation" id="employees" novalidate>
 		<div class="col-2 mb-3">
-			<label for="name">اسم المستخدم</label>
+			<label for="name">اسم الموظف</label>
 			<input type="text" class="form-control" placeholder="اسم المستخدم" required id="name">
 			<div class="invalid-feedback">
 				اكتب الاسم من فضلك
 			</div>
 		</div>
-		<div class="col-2 mb-2">
-			<label for="pass">كلمة السر</label>
-			<input type="password" class="form-control" placeholder="كلمة السر" required  id="pass">
+		<div class="col-2 mb-3">
+			<label for="phone">رقم الهاتف</label>
+			<input type="text" class="form-control" placeholder="اكتب رقم الهاتف" required  id="phone">
 			<div class="invalid-feedback">
-				اكتب كلمة السر من فضلك
+				أدخل رقم الهاتف من فضلك
 			</div>
 		</div>
 		<div class="col-2 mb-3">
-			<label for="full">اكتب الاسم بالكامل</label>
-			<input type="text" class="form-control" placeholder="اكتب الاسم بالكامل" required  id="full">
+			<label for="address">العنوان</label>
+			<input type="text" class="form-control" placeholder="إدخل العنوان" required  id="address">
 			<div class="invalid-feedback">
-				أدخل اسم المستخدم كامل من فضلك
+				أدخل العنوان من فضلك
+			</div>
+		</div>
+		<div class="col-2 mb-3">
+			<label for="jobTitle">المسمى الوظيفى</label>
+			<input type="text" class="form-control" placeholder="اسم الوظيفة" required  id="jobTitle">
+			<div class="invalid-feedback">
+				أدخل اسم اسم الوظيفة من فضلك
 			</div>
 		</div>
 		<div class="col-1 mb-1">
@@ -43,26 +50,28 @@
 		<thead class="tableStyle">
 			<tr>
 				<th scope="col-1">#</th>
-				<th scope="col-2">اسم المستخدم</th>
-				<th scope="col-2">الاسم كامل</th>
+				<th scope="col-2">الإسم</th>
+				<th scope="col-2">الهاتف</th>
+				<th scope="col-2">العنوان</th>
+				<th scope="col-2">اسم الوظيفة</th>
 				<th scope="col-2">تحكم</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php
-				if (! empty($users)){
+				if (! empty($employees)){
 					$count= 0;
-					foreach($users as $user){
+					foreach($employees as $employee){
 					?>
-					<tr user="<?=$user['user_name']?>" full="<?=$user['full_name']?>">
+					<tr employee="<?=$employee['name']?>" phone="<?=$employee['phone']?>">
 						<td scope="row"><?=++$count?></td>
-						<td><?= $user['user_name']; ?></td>
-						<td><?= $user['full_name']; ?></td>
-						<td class="col-2" style="font-size:20px">
-							<i class='fa fa-edit edit pl-2' id="<?=$user['id']?>"></i>
-							<?php if($_SESSION['user_name'] != $user['user_name']){?>
-							<i class='fa fa-remove remove pl-2' id="<?=$user['id']?>"></i>
-							<?php } ?>
+						<td><?= $employee['name']; ?></td>
+						<td><?= $employee['phone']; ?></td>
+						<td><?= $employee['address']; ?></td>
+						<td><?= $employee['statement']; ?></td>
+						<td class="col-2" style="font-size:20px" address="<?=$employee['address']?>" statement="<?=$employee['statement']?>">
+							<i class='fa fa-edit edit pl-2'id="<?=$employee['id']?>"></i>
+							<i class='fa fa-remove remove pl-2' id="<?=$employee['id']?>"></i>
 						</td>
 					</tr>
 					<?php
@@ -77,8 +86,7 @@
 			<div class="modal-content">
 				<div class="modal-body row">
 					<form class="row g-3 needs-validation" id='updateForm' novalidate>
-						<input type="hidden" id="userId">
-						<input type="hidden" id="thisName">
+						<input type="hidden" id="employeeId">
 						<div class="col-5 mt-2"><h3>تعديل البيانات</h3></div>
 						<div class="col-5 mt-2"></div>
 						<div class="col-1 mt-2">
@@ -87,19 +95,33 @@
 							</button>
 						</div>
 						<div class="col-1 mt-2"></div>
-						<div class="col-10 mt-2">
-							<label for="userName">اسم المستخدم</label>
-							<input type="text" class="form-control" required id="userName">
+						<div class="col-5 mt-2">
+							<label for="employeeN">اسم الموظف</label>
+							<input type="text" class="form-control" required id="employeeN">
 							<div class="invalid-feedback">
 								اكتب الاسم من فضلك
 							</div>
 						</div>
-						<div class="col-2 mt-2"></div>
-						<div class="col-10 mt-2">
-							<label for="fullName">اكتب الاسم بالكامل</label>
-							<input type="text" class="form-control" required  id="fullName">
+						<div class="col-5 mt-2">
+							<label for="employeeP">اكتب رقم الهاتف</label>
+							<input type="text" class="form-control" required  id="employeeP">
 							<div class="invalid-feedback">
-								أدخل اسم المستخدم كامل من فضلك
+								أدخل رقم الهاتف من فضلك
+							</div>
+						</div>
+						<div class="col-2 mt-2"></div>
+						<div class="col-5 mt-2">
+							<label for="employeeA">اكتب العنوان </label>
+							<input type="text" class="form-control" required  id="employeeA">
+							<div class="invalid-feedback">
+								أدخل العنوان من فضلك
+							</div>
+						</div>
+						<div class="col-5 mt-2">
+							<label for="employeeS">اكتب اسم الوطيفة</label>
+							<input type="text" class="form-control" required  id="employeeS">
+							<div class="invalid-feedback">
+								أدخل اسم الوظيفة كامل من فضلك
 							</div>
 						</div>
 						<div class="col-2 mt-2"></div>
@@ -121,7 +143,7 @@
 			<div class="modal-content">
 				<div class="modal-body row">
 					<form class="row g-3 needs-validation" id='passowrdForm' novalidate>
-						<input type="hidden" id="user_id">
+						<input type="hidden" id="employee_id">
 						<div class="col-5 mt-2"><h3>إدخل كلمة السر</h3></div>
 						<div class="col-5 mt-2"></div>
 						<div class="col-1 mt-2">

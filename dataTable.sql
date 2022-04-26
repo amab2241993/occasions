@@ -26,8 +26,8 @@ CREATE TABLE `employees` (
   `name`       varchar(100) NOT NULL,
   `address`    varchar(100) NOT NULL,
   `phone`      varchar(100) NOT NULL,
-  `statement`  varchar(100) NOT NULL,
-  `salary`     int(11) UNSIGNED NOT NULL,
+  `statement`  varchar(100) DEFAULT NULL,
+  `salary`     int(11) UNSIGNED NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
                UNIQUE KEY(`name`)

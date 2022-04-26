@@ -1,13 +1,15 @@
 $(function () {
 	'use strict'
-    $('#users').submit(function(data){
+    $('#employees').submit(function(data){
         data.preventDefault()
-        var form = document.getElementById('users')
+        var form = document.getElementById('employees')
         if(form.checkValidity()){
             $.ajax({
                 type:'post',
-                url:'../../model/settings/users/testUser.php',
-                data:{name:$('#name').val()}
+                url:'../../model/settings/employees/testEmployees.php',
+                data:{
+                    name:$('#name').val(),
+                }
             }).done(function(result){
                 if(result){
                     alert("هذا الاسم مستخدم مسبقا")
@@ -15,11 +17,12 @@ $(function () {
                 else{
                     $.ajax({
                         type:'post',
-                        url:'../../model/settings/users/users.php',
+                        url:'../../model/settings/employees/employees.php',
                         data:{
-                            name:$('#name').val(),
-                            pass:$('#pass').val(),
-                            full:$('#full').val(),
+                            name     : $('#name').val(),
+                            phone    : $('#phone').val(),
+                            address  : $('#address').val(),
+                            jobTitle : $('#jobTitle').val(),
                         }
                     }).done(function(){
                         window.location.reload()
@@ -29,10 +32,9 @@ $(function () {
         }
     })
     $('body').on('click' , '.edit' , function(){
-        $('#userName').val($(this).parent().parent().attr('user'))
-        $('#fullName').val($(this).parent().parent().attr('full'))
-        $('#thisName').val($(this).parent().parent().attr('user'))
-        $('#userId').val($(this).attr('id'))
+        $('#customerName').val($(this).parent().parent().attr('customer'))
+        $('#customerPhone').val($(this).parent().parent().attr('phone'))
+        $('#customerId').val($(this).attr('id'))
         $('#update').modal('show')
     })
     $("#updateForm").on('submit',function(data){
@@ -41,10 +43,10 @@ $(function () {
         if(form.checkValidity()){
             $.ajax({
                 type:'POST',
-                url:'../../model/settings/users/testUpdate.php',
+                url:'../../model/settings/employees/testUpdate.php',
                 data:{
-                    userId   : $('#userId').val(),
-                    userName : $('#userName').val(),
+                    customerId     : $('#customerId').val(),
+                    customerName   : $('#customerName').val(),
                 }
             }).done(function(result){
                 if(result == true){
@@ -53,12 +55,12 @@ $(function () {
                 else{
                     $.ajax({
                         type: 'post',
-                        url: '../../model/settings/users/updateUsers.php',
+                        url: '../../model/settings/employees/updateEmployee.php',
                         data: {
-                            userId   : $('#userId').val(),
-                            userName : $('#userName').val(),
-                            fullName : $('#fullName').val(),
-                            thisName : $('#thisName').val()
+                            customerId     : $('#customerId').val(),
+                            customerName   : $('#customerName').val(),
+                            customerPhone  : $('#customerPhone').val(),
+                            customerStatus : 2
                         }
                     }).done(function(result){
                         if(result != true){
@@ -74,8 +76,8 @@ $(function () {
         }
     })
     $('body').on('click' , '.remove' , function(){
-        var userId = $(this).attr("id")
-        $('#user_id').val(userId)
+        var customerId = $(this).attr("id")
+        $('#customer_id').val(customerId)
 
         if(confirm("هل انت متأكد من انك تريد الحزف")){
             $('#passwordInter').modal('show')
@@ -96,16 +98,16 @@ $(function () {
                 else{
                     $.ajax({
                         type:'post',
-                        url:'../../model/settings/users/userDelete.php',
+                        url:'../../model/settings/employees/employeeDelete.php',
                         data:{
-                            userId : $('#user_id').val(),
+                            customerId : $('#customer_id').val(),
                         }
                     }).done(function(){
                         if(result != true){
                         }
                         else{
                             alert("تم الحذف بنجاح")
-                            window.location.reload()
+                            // window.location.reload()
                         }
                     })
                 }

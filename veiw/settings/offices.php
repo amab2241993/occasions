@@ -2,34 +2,27 @@
 	ob_start(); // Output Buffering Start
 	session_start();
 	// if (isset($_SESSION['user_name'])) {
-		$pageTitle = 'users';
-		$getH3     = "المستخدمين";
+		$pageTitle = 'offices';
+		$getH3     = "المكاتب";
 		include '../../init.php';
-		?><script src="<?php echo $controller ?>settings/users.js"></script><?php
+		?><script src="<?php echo $controller ?>settings/offices.js"></script><?php
 		include $tpl . 'navbar.php';
-		$stmt = $con->prepare("SELECT * FROM users ORDER BY id DESC");
+		$stmt = $con->prepare("SELECT * FROM customers WHERE status = 2 ORDER BY id DESC");
 		$stmt->execute();
-		$users = $stmt->fetchAll();
+		$customers = $stmt->fetchAll();
 		/* Start Dashboard Page */
 	?>
-	<form class="row needs-validation" id="users" novalidate>
-		<div class="col-2 mb-3">
-			<label for="name">اسم المستخدم</label>
+	<form class="row needs-validation" id="offices" novalidate>
+		<div class="col-3 mb-3">
+			<label for="name">اسم الزميل</label>
 			<input type="text" class="form-control" placeholder="اسم المستخدم" required id="name">
 			<div class="invalid-feedback">
 				اكتب الاسم من فضلك
 			</div>
 		</div>
-		<div class="col-2 mb-2">
-			<label for="pass">كلمة السر</label>
-			<input type="password" class="form-control" placeholder="كلمة السر" required  id="pass">
-			<div class="invalid-feedback">
-				اكتب كلمة السر من فضلك
-			</div>
-		</div>
-		<div class="col-2 mb-3">
-			<label for="full">اكتب الاسم بالكامل</label>
-			<input type="text" class="form-control" placeholder="اكتب الاسم بالكامل" required  id="full">
+		<div class="col-3 mb-3">
+			<label for="phone">رقم الهاتف</label>
+			<input type="text" class="form-control" placeholder="اكتب رقم الهاتف" required  id="phone">
 			<div class="invalid-feedback">
 				أدخل اسم المستخدم كامل من فضلك
 			</div>
@@ -43,26 +36,24 @@
 		<thead class="tableStyle">
 			<tr>
 				<th scope="col-1">#</th>
-				<th scope="col-2">اسم المستخدم</th>
-				<th scope="col-2">الاسم كامل</th>
+				<th scope="col-2">اسم المكتب</th>
+				<th scope="col-2">الهاتف</th>
 				<th scope="col-2">تحكم</th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php
-				if (! empty($users)){
+				if (! empty($customers)){
 					$count= 0;
-					foreach($users as $user){
+					foreach($customers as $customer){
 					?>
-					<tr user="<?=$user['user_name']?>" full="<?=$user['full_name']?>">
+					<tr customer="<?=$customer['name']?>" phone="<?=$customer['phone']?>">
 						<td scope="row"><?=++$count?></td>
-						<td><?= $user['user_name']; ?></td>
-						<td><?= $user['full_name']; ?></td>
+						<td><?= $customer['name']; ?></td>
+						<td><?= $customer['phone']; ?></td>
 						<td class="col-2" style="font-size:20px">
-							<i class='fa fa-edit edit pl-2' id="<?=$user['id']?>"></i>
-							<?php if($_SESSION['user_name'] != $user['user_name']){?>
-							<i class='fa fa-remove remove pl-2' id="<?=$user['id']?>"></i>
-							<?php } ?>
+							<i class='fa fa-edit edit pl-2' id="<?=$customer['id']?>"></i>
+							<i class='fa fa-remove remove pl-2' id="<?=$customer['id']?>"></i>
 						</td>
 					</tr>
 					<?php
@@ -77,8 +68,7 @@
 			<div class="modal-content">
 				<div class="modal-body row">
 					<form class="row g-3 needs-validation" id='updateForm' novalidate>
-						<input type="hidden" id="userId">
-						<input type="hidden" id="thisName">
+						<input type="hidden" id="customerId">
 						<div class="col-5 mt-2"><h3>تعديل البيانات</h3></div>
 						<div class="col-5 mt-2"></div>
 						<div class="col-1 mt-2">
@@ -88,16 +78,16 @@
 						</div>
 						<div class="col-1 mt-2"></div>
 						<div class="col-10 mt-2">
-							<label for="userName">اسم المستخدم</label>
-							<input type="text" class="form-control" required id="userName">
+							<label for="customerName">اسم المكتب</label>
+							<input type="text" class="form-control" required id="customerName">
 							<div class="invalid-feedback">
 								اكتب الاسم من فضلك
 							</div>
 						</div>
 						<div class="col-2 mt-2"></div>
 						<div class="col-10 mt-2">
-							<label for="fullName">اكتب الاسم بالكامل</label>
-							<input type="text" class="form-control" required  id="fullName">
+							<label for="customerPhone">اكتب رقم الهاتف</label>
+							<input type="text" class="form-control" required  id="customerPhone">
 							<div class="invalid-feedback">
 								أدخل اسم المستخدم كامل من فضلك
 							</div>
@@ -121,7 +111,7 @@
 			<div class="modal-content">
 				<div class="modal-body row">
 					<form class="row g-3 needs-validation" id='passowrdForm' novalidate>
-						<input type="hidden" id="user_id">
+						<input type="hidden" id="customer_id">
 						<div class="col-5 mt-2"><h3>إدخل كلمة السر</h3></div>
 						<div class="col-5 mt-2"></div>
 						<div class="col-1 mt-2">

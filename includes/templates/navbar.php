@@ -76,25 +76,25 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="../settings/mainCategories.php">الأصناف الرئيسية</a>
                             <a class="dropdown-item" href="../settings/subCategories.php">الأصناف الفرعية</a>
-                            <a class="dropdown-item" href="#">المكاتب</a>
+                            <a class="dropdown-item" href="../settings/offices.php">المكاتب</a>
                             <a class="dropdown-item" href="../settings/users.php">المستخدمين</a>
-                            <a class="dropdown-item" href="#">صلاحيات المستخدمين</a>
-                            <a class="dropdown-item" href="#">الموظفيين</a>
-                            <a class="dropdown-item" href="#">الموظفيين و المرتبات</a>
-                            <a class="dropdown-item" href="#">صرف المرتبات</a>
-                            <a class="dropdown-item" href="#">إدارة السلفيات</a>
-                            <a class="dropdown-item" href="#">السلفيات</a>
-                            <a class="dropdown-item" href="#">سداد السلفيات</a>
-                            <a class="dropdown-item" href="#">تقرير السلفيات</a>
-                            <a class="dropdown-item" href="#">المشرفين والادارية</a>
-                            <a class="dropdown-item" href="#">نسخ إحتياطي</a>
+                            <a class="dropdown-item" href="../settings/permissions.php">صلاحيات المستخدمين</a>
+                            <a class="dropdown-item" href="../settings/employees.php">الموظفيين</a>
+                            <a class="dropdown-item" href="../settings/offices.php">الموظفيين و المرتبات</a>
+                            <a class="dropdown-item" href="../settings/offices.php">صرف المرتبات</a>
+                            <a class="dropdown-item" href="../settings/offices.php">إدارة السلفيات</a>
+                            <a class="dropdown-item" href="../settings/offices.php">السلفيات</a>
+                            <a class="dropdown-item" href="../settings/offices.php">سداد السلفيات</a>
+                            <a class="dropdown-item" href="../settings/offices.php">تقرير السلفيات</a>
+                            <a class="dropdown-item" href="../settings/offices.php">المشرفين والادارية</a>
+                            <a class="dropdown-item" href="../settings/offices.php">نسخ إحتياطي</a>
                             <a class="dropdown-item" href="../settings/controllers.php">إدارة البنود</a>
-                            <a class="dropdown-item" href="#">شيكات تحت التحصيل</a>
-                            <a class="dropdown-item" href="#">تعديل كلمة السر</a>
-                            <a class="dropdown-item" href="#">إدارة العملاء</a>
+                            <a class="dropdown-item" href="../settings/offices.php">شيكات تحت التحصيل</a>
+                            <a class="dropdown-item" href="../settings/offices.php">تعديل كلمة السر</a>
+                            <a class="dropdown-item" href="../settings/offices.php">إدارة العملاء</a>
                             <a class="dropdown-item" href="../settings/sales.php">المبيعات</a>
-                            <a class="dropdown-item" href="#">التحويل بين الحسابات</a>
-                            <a class="dropdown-item" href="#">حذف بيانات النظام</a>
+                            <a class="dropdown-item" href="../settings/offices.php">التحويل بين الحسابات</a>
+                            <a class="dropdown-item" href="../settings/offices.php">حذف بيانات النظام</a>
                             <a class="dropdown-item" href="../login/logout.php">تسجيــل خروج</a>
                         </div>
                     </li>
