@@ -6,7 +6,7 @@ $(function () {
         if(form.checkValidity()){
             $.ajax({
                 type:'post',
-                url:'../../model/settings/employees/testEmployees.php',
+                url:'../../model/settings/employees/testEmployee.php',
                 data:{
                     name:$('#name').val(),
                 }
@@ -32,9 +32,11 @@ $(function () {
         }
     })
     $('body').on('click' , '.edit' , function(){
-        $('#customerName').val($(this).parent().parent().attr('customer'))
-        $('#customerPhone').val($(this).parent().parent().attr('phone'))
-        $('#customerId').val($(this).attr('id'))
+        $('#employeeN').val($(this).parent().parent().attr('employee'))
+        $('#employeeP').val($(this).parent().parent().attr('phone'))
+        $('#employeeA').val($(this).parent().attr('address'))
+        $('#employeeS').val($(this).parent().attr('statement'))
+        $('#employeeId').val($(this).attr('id'))
         $('#update').modal('show')
     })
     $("#updateForm").on('submit',function(data){
@@ -45,8 +47,8 @@ $(function () {
                 type:'POST',
                 url:'../../model/settings/employees/testUpdate.php',
                 data:{
-                    customerId     : $('#customerId').val(),
-                    customerName   : $('#customerName').val(),
+                    employeeId : $('#employeeId').val(),
+                    employeeN  : $('#employeeN').val(),
                 }
             }).done(function(result){
                 if(result == true){
@@ -57,10 +59,11 @@ $(function () {
                         type: 'post',
                         url: '../../model/settings/employees/updateEmployee.php',
                         data: {
-                            customerId     : $('#customerId').val(),
-                            customerName   : $('#customerName').val(),
-                            customerPhone  : $('#customerPhone').val(),
-                            customerStatus : 2
+                            employeeId : $('#employeeId').val(),
+                            employeeN  : $('#employeeN').val(),
+                            employeeP  : $('#employeeP').val(),
+                            employeeA  : $('#employeeA').val(),
+                            employeeS  : $('#employeeS').val()
                         }
                     }).done(function(result){
                         if(result != true){
@@ -76,8 +79,8 @@ $(function () {
         }
     })
     $('body').on('click' , '.remove' , function(){
-        var customerId = $(this).attr("id")
-        $('#customer_id').val(customerId)
+        var employeeId = $(this).attr("id")
+        $('#employee_id').val(employeeId)
 
         if(confirm("هل انت متأكد من انك تريد الحزف")){
             $('#passwordInter').modal('show')
@@ -100,7 +103,7 @@ $(function () {
                         type:'post',
                         url:'../../model/settings/employees/employeeDelete.php',
                         data:{
-                            customerId : $('#customer_id').val(),
+                            employeeId : $('#employee_id').val(),
                         }
                     }).done(function(){
                         if(result != true){

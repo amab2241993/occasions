@@ -1,64 +1,31 @@
 <?php
 	ob_start(); // Output Buffering Start
 	session_start();
-	// if (isset($_SESSION['user_name'])) {
-		$pageTitle = 'permissions';
-		$getH3     = "صلاحيات المستخدم";
+	// if (isset($_SESSION['user_name'])){
+		$pageTitle = 'delete all';
+		$getH3     = 'حذف الكل';
 		include '../../init.php';
-		?><script src="<?php echo $controller ?>settings/permissions.js"></script><?php
+		?><script src="<?php echo $controller ?>settings/deleteAll.js"></script><?php
 		include $tpl . 'navbar.php';
-		$stmt = $con->prepare("SELECT * FROM users ORDER BY id DESC");
+		$stmt = $con->prepare("SELECT id , name FROM stores ORDER BY id ASC");
 		$stmt->execute();
-		$users = $stmt->fetchAll();
-		/* Start Dashboard Page */
+		$rows = $stmt->fetchAll();
+		$stmt = $con->prepare("SELECT id , name FROM accounts WHERE parent_id = 5");
+		$stmt->execute();
+		$accounts = $stmt->fetchAll();
+		/* Start bocking Page */
 	?>
-	<form class="row needs-validation" id="permissions" novalidate>
-		<div class="col-3 mb-3">
-			<select class="form-control" required id="user">
-				<option selected disabled value="">إختار مستخدم</option>
-				<?php
-					foreach($users as $user){
-					?>
-					<option value="<?=$user['id']?>"><?=$user['user_name']?></option>
-					<?php
-					}
-				?>
-			</select>
-			<div class="invalid-feedback">
-				اكتب الاسم من فضلك
-			</div>
+	<center>
+		<div style="margin-top:100px;margin-bottom:100px">
+			<button class="btn btn-danger" id="remove">حذف جميع بيانات النظام</button>
 		</div>
-		<div class="col-3 mb-3">
-			<select class="form-control" required id="permission">
-			</select>
-			<div class="invalid-feedback">
-				إختار الصلاحية من فضلك
-			</div>
-		</div>
-		<div class="col-1 mb-1">
-			<button class="form-control btn btn-primary" id="add" type="submit">اضافة</button>
-		</div>
-		<div class="col-2 mb-1">
-			<button class="form-control btn btn-primary" id="all" value="all" type="submit">اضافة الكل</button>
-		</div>
-	</form>
-	<table class="table">
-		<thead class="tableStyle">
-			<tr>
-				<th scope="col-2">اسم الصلاحية</th>
-				<th scope="col-2">حذف</th>
-			</tr>
-		</thead>
-		<tbody>
-		</tbody>
-	</table>
+	</center>
 	<!-- ******************** model **************************** -->
 	<div class="modal fade" id='passwordInter' tabindex="-1" role="dialog" aria-labelledby="passwordInterLabel" aria-hidden=true>
 		<div class="modal-dialog"  role="document">
 			<div class="modal-content">
 				<div class="modal-body row">
 					<form class="row g-3 needs-validation" id='passowrdForm' novalidate>
-						<input type="hidden" id="userPermissionId">
 						<div class="col-5 mt-2"><h3>إدخل كلمة السر</h3></div>
 						<div class="col-5 mt-2"></div>
 						<div class="col-1 mt-2">
@@ -85,7 +52,7 @@
 		</div>
 	</div>
 	<?php
-		/* End Dashboard Page */
+		/* End bocking Page */
 		include $tpl . 'footer.php';
 	// }
 	// else{

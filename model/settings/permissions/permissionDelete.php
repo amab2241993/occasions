@@ -4,9 +4,9 @@
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		try {
 			$con->beginTransaction();
-			$customerId = $_POST['customerId'];
-			$stmt = $con->prepare("DELETE FROM customers WHERE id = ?");
-			$stmt->execute(array($customerId));
+			$userPermissionId = $_POST['userPermissionId'];
+			$stmt = $con->prepare("DELETE FROM user_permission WHERE id = ?");
+			$stmt->execute(array($userPermissionId));
 			$count = $stmt->rowCount();
 			if ($count > 0) {
 				$result = true;

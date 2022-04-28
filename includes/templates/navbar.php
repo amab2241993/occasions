@@ -80,7 +80,7 @@
                             <a class="dropdown-item" href="../settings/users.php">المستخدمين</a>
                             <a class="dropdown-item" href="../settings/permissions.php">صلاحيات المستخدمين</a>
                             <a class="dropdown-item" href="../settings/employees.php">الموظفيين</a>
-                            <a class="dropdown-item" href="../settings/offices.php">الموظفيين و المرتبات</a>
+                            <a class="dropdown-item" href="../settings/employeeSalary.php">الموظفيين و المرتبات</a>
                             <a class="dropdown-item" href="../settings/offices.php">صرف المرتبات</a>
                             <a class="dropdown-item" href="../settings/offices.php">إدارة السلفيات</a>
                             <a class="dropdown-item" href="../settings/offices.php">السلفيات</a>
@@ -94,7 +94,7 @@
                             <a class="dropdown-item" href="../settings/offices.php">إدارة العملاء</a>
                             <a class="dropdown-item" href="../settings/sales.php">المبيعات</a>
                             <a class="dropdown-item" href="../settings/offices.php">التحويل بين الحسابات</a>
-                            <a class="dropdown-item" href="../settings/offices.php">حذف بيانات النظام</a>
+                            <a class="dropdown-item" href="../settings/deleteAll.php">حذف بيانات النظام</a>
                             <a class="dropdown-item" href="../login/logout.php">تسجيــل خروج</a>
                         </div>
                     </li>

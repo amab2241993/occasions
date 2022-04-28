@@ -1,44 +1,78 @@
 $(function () {
 	'use strict'
+    var which
     $('#user').on('change',function(){
         $.ajax({
             type:'post',
-            url:'../../model/settings/users/getPermission.php',
-        })
-    })
-    $('#offices').submit(function(data){
-        data.preventDefault()
-        var form = document.getElementById('offices')
-        if(form.checkValidity()){
-            $.ajax({
-                type:'post',
-                url:'../../model/settings/offices/testOffices.php',
-                data:{
-                    name:$('#name').val(),
-                    status : 2
-                }
-            }).done(function(result){
-                if(result){
-                    alert("هذا الاسم مستخدم مسبقا")
+            url:'../../model/settings/permissions/getPermission.php',
+            data:{userId : $('#user').val()}
+        }).done(function(result){
+            var html = ''
+            $('#permission').find('option').remove().end()
+            $('#permission').append(`<option disabled selected value="">${'إختار الصلاحية'}</option>`)
+            $.each(result, function(index){
+                if(result[index].userPermission != 0){
+                    html += `<tr>
+                            <td>${result[index].name}</td>
+                            <td><i class='fa fa-remove remove' id=${result[index].userPermission}></td>
+                            </tr>`
                 }
                 else{
-                    $.ajax({
-                        type:'post',
-                        url:'../../model/settings/offices/offices.php',
-                        data:{
-                            name  : $('#name').val(),
-                            phone : $('#phone').val(),
-                        }
-                    }).done(function(){
-                        window.location.reload()
-                    })
+                    $('#permission').append(`<option value=${result[index].id}>${result[index].name}</option>`)
                 }
             })
+            $('tbody').html(html)
+        })
+    })
+    $("button").click(function () {
+        which = $(this).attr("id");
+    });
+    $('#permissions').submit(function(data){
+        data.preventDefault()
+        if(which == "all"){
+            var arr = $('#permission option').map(function(){
+                return this.value
+            })
+            var objectA = []
+            for (let index = 0; index < arr.length; index++) {
+                var feed
+                feed = {
+                    "id" : arr[index],
+                }
+                objectA.push(feed)
+            }
+            if(parseInt(objectA.length) != 0){
+                $.ajax({
+                    type:'post',
+                    url:'../../model/settings/permissions/all.php',
+                    data:{
+                        userId : $('#user').val() ,
+                        array  : objectA,
+                    },
+                }).done(function(){
+                    window.location.reload()
+                })
+            } 
+        }
+        else{
+            var form = document.getElementById('permissions')
+            if(form.checkValidity()){
+                $.ajax({
+                    type:'post',
+                    url:'../../model/settings/permissions/add.php',
+                    data:{
+                        userId       : $('#user').val() ,
+                        permissionId : $('#permission').val(),
+                    },
+                }).done(function(){
+                    window.location.reload()
+                })
+            }
         }
     })
     $('body').on('click' , '.remove' , function(){
-        var customerId = $(this).attr("id")
-        $('#customer_id').val(customerId)
+        var userPermissionId = $(this).attr("id")
+        $('#userPermissionId').val(userPermissionId)
 
         if(confirm("هل انت متأكد من انك تريد الحزف")){
             $('#passwordInter').modal('show')
@@ -59,16 +93,16 @@ $(function () {
                 else{
                     $.ajax({
                         type:'post',
-                        url:'../../model/settings/offices/officeDelete.php',
+                        url:'../../model/settings/permissions/permissionDelete.php',
                         data:{
-                            customerId : $('#customer_id').val(),
+                            userPermissionId : $('#userPermissionId').val(),
                         }
                     }).done(function(){
                         if(result != true){
                         }
                         else{
                             alert("تم الحذف بنجاح")
-                            // window.location.reload()
+                            window.location.reload()
                         }
                     })
                 }

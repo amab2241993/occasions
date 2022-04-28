@@ -119,7 +119,7 @@ $(function () {
                     <td class="col-2 mb-2" name="price_workers[]" id="price_workers${result}">${priceWorkers}</td>
                     <td class="col-2 mb-2" name="total_units[]"   id="total_units${result}">${totalUnits}</td>
                     <td class="col-1 mb-2">
-                    <i class='fa fa-remove delete'>
+                    <i class='fa fa-remove delete'></i>
                     </td></tr>`
                     $('tbody').append(html)
                     $('#bockings').append(form)

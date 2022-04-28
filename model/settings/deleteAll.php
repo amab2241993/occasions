@@ -1,12 +1,11 @@
 <?php
 	session_start();
-	include '../../../connect.php';
+	include '../../connect.php';
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		try {
 			$con->beginTransaction();
-			$customerId = $_POST['customerId'];
-			$stmt = $con->prepare("DELETE FROM customers WHERE id = ?");
-			$stmt->execute(array($customerId));
+			$stmt = $con->prepare("DELETE FROM main");
+			$stmt->execute();
 			$count = $stmt->rowCount();
 			if ($count > 0) {
 				$result = true;
