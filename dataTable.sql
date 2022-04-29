@@ -33,6 +33,18 @@ CREATE TABLE `employees` (
                UNIQUE KEY(`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `loans` (
+  `id`         int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name`       varchar(100) NOT NULL,
+  `address`    varchar(100) NOT NULL,
+  `phone`      varchar(100) NOT NULL,
+  `Lending`    int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `repayment`  int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+               UNIQUE KEY(`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `main` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),

@@ -4,6 +4,9 @@
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		try {
 			$con->beginTransaction();
+			$stmt = $con->prepare("SELECT COUNT(*) FROM bills WHERE status = 2");
+			$stmt->execute();
+			$numRow = $stmt->fetchColumn() + 1;
 			$billId    = $_POST['billId'];
 			$main      = $_POST['main'];
 			$type 	   = $_POST['type'];

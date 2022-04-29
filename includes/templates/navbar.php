@@ -82,11 +82,11 @@
                             <a class="dropdown-item" href="../settings/employees.php">الموظفيين</a>
                             <a class="dropdown-item" href="../settings/employeeSalary.php">الموظفيين و المرتبات</a>
                             <a class="dropdown-item" href="../settings/offices.php">صرف المرتبات</a>
-                            <a class="dropdown-item" href="../settings/offices.php">إدارة السلفيات</a>
-                            <a class="dropdown-item" href="../settings/offices.php">السلفيات</a>
-                            <a class="dropdown-item" href="../settings/offices.php">سداد السلفيات</a>
-                            <a class="dropdown-item" href="../settings/offices.php">تقرير السلفيات</a>
-                            <a class="dropdown-item" href="../settings/offices.php">المشرفين والادارية</a>
+                            <a class="dropdown-item" href="../settings/managementLoan.php">إدارة السلفيات</a>
+                            <a class="dropdown-item" href="../settings/loans.php">السلفيات</a>
+                            <a class="dropdown-item" href="../settings/repayment.php">سداد السلفيات</a>
+                            <a class="dropdown-item" href="../settings/loanReport.php">تقرير السلفيات</a>
+                            <a class="dropdown-item" href="../settings/supervisors.php">المشرفين والادارية</a>
                             <a class="dropdown-item" href="../settings/offices.php">نسخ إحتياطي</a>
                             <a class="dropdown-item" href="../settings/controllers.php">إدارة البنود</a>
                             <a class="dropdown-item" href="../settings/offices.php">شيكات تحت التحصيل</a>
