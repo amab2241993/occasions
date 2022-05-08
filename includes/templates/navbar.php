@@ -29,7 +29,7 @@
                             <a class="dropdown-item" href="../stores/goods.php">بضاعة اول المدة</a>
                             <a class="dropdown-item" href="../stores/storeCheck.php">فحص المخزن</a>
                             <a class="dropdown-item" href="../stores/damaged.php">ترحيل بين المخازن</a>
-                            <a class="dropdown-item" href="#">الفواتير غير المسترجعة</a>
+                            <a class="dropdown-item" href="../stores/return.php">الفواتير غير المسترجعة</a>
                         </div>
                     </li>
                     <li class="nav-item">
@@ -90,8 +90,8 @@
                             <a class="dropdown-item" href="../settings/offices.php">نسخ إحتياطي</a>
                             <a class="dropdown-item" href="../settings/controllers.php">إدارة البنود</a>
                             <a class="dropdown-item" href="../settings/offices.php">شيكات تحت التحصيل</a>
-                            <a class="dropdown-item" href="../settings/offices.php">تعديل كلمة السر</a>
-                            <a class="dropdown-item" href="../settings/offices.php">إدارة العملاء</a>
+                            <a class="dropdown-item" href="../settings/changePassword.php">تعديل كلمة السر</a>
+                            <a class="dropdown-item" href="../settings/customers.php">إدارة العملاء</a>
                             <a class="dropdown-item" href="../settings/sales.php">المبيعات</a>
                             <a class="dropdown-item" href="../settings/offices.php">التحويل بين الحسابات</a>
                             <a class="dropdown-item" href="../settings/deleteAll.php">حذف بيانات النظام</a>

@@ -97,6 +97,19 @@ CREATE TABLE `users` (
                UNIQUE KEY(`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `sales` (
+  `id`         int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `main_id`    int(11) UNSIGNED NOT NULL,
+  `service_id` int(11) UNSIGNED NOT NULL,
+  `parent_id`  int(11) UNSIGNED DEFAULT NULL,
+  `quantity`   int(6) UNSIGNED NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  CONSTRAINT   `s_m_1` FOREIGN KEY (`main_id`) REFERENCES `main` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT   `s_s_2` FOREIGN KEY (`parent_id`) REFERENCES `services` (`parent_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT   `s_s_3` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `workers` (
   `id`         int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name`       varchar(100) NOT NULL,
@@ -179,21 +192,37 @@ CREATE TABLE `store_service`(
   `created_at`      timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at`      timestamp NOT NULL DEFAULT current_timestamp(),
                     UNIQUE(`store_id`, `service_id`),
-  CONSTRAINT        `s_s_1` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT        `s_s_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT        `s_w_3` FOREIGN KEY (`worker_id`) REFERENCES `workers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT        `s_s_s_1` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT        `s_s_s_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT        `s_s_w_3` FOREIGN KEY (`worker_id`) REFERENCES `workers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `cashing` (
   `id`               int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `store_service_id` int(11) UNSIGNED NOT NULL,
+  `service_id`       int(11) UNSIGNED NOT NULL,
+  `store_id`         int(11) UNSIGNED NOT NULL,
+  `parent_id`        int(11) UNSIGNED DEFAULT NULL,
   `bill_id`          int(11) UNSIGNED NOT NULL,
-  `quantity_in`      int(11) UNSIGNED NOT NULL DEFAULT 0,
-  `quantity_out`     int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `quantity`         int(11) UNSIGNED NOT NULL DEFAULT 0,
   `created_at`       timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at`       timestamp NOT NULL DEFAULT current_timestamp(),
   CONSTRAINT         `c_s_s_1` FOREIGN KEY (`store_service_id`) REFERENCES `store_service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT         `c_b_2` FOREIGN KEY (`bill_id`) REFERENCES `bills` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT         `c_s_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT         `c_s_3` FOREIGN KEY (`parent_id`) REFERENCES `services` (`parent_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT         `c_s_4` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT         `c_b_5` FOREIGN KEY (`bill_id`) REFERENCES `bills` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cashing_out` (
+  `id`          int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `cashing_id`  int(11) UNSIGNED NOT NULL,
+  `customer_id` int(11) UNSIGNED NOT NULL,
+  `quantity`    int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `created_at`  timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at`  timestamp NOT NULL DEFAULT current_timestamp(),
+  CONSTRAINT    `c_o_c_1` FOREIGN KEY (`cashing_id`) REFERENCES `cashing` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT    `c_o_c_2` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `checks` (

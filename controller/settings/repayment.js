@@ -9,6 +9,8 @@ $(function () {
         var repayment = $(this).find('option:selected').attr('repayment')
         var amount    = parseInt(Lending) - parseInt(repayment)
         $("#amount").attr({"max" : amount})
+        var next = $("input").eq(0)
+        next.focus()
     })
     $('#loans').submit(function(data){
         data.preventDefault()

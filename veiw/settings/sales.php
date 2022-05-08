@@ -5,6 +5,8 @@
 		$pageTitle = 'sales';
 		$getH3     = 'المبيعات';
 		include '../../init.php';
+		?><script src="<?php echo $controller ?>settings/sales.js"></script><?php
+		include $tpl . 'navbar.php';
 		$stmt = $con->prepare("SELECT id , name FROM stores ORDER BY id ASC");
 		$stmt->execute();
 		$rows = $stmt->fetchAll();
@@ -50,7 +52,7 @@
 		<div class="col-2 mt-2">
 			<label for="quantity" class="form-label">الكمية</label>
 			<input type="number" disabled class="form-control" value="" id="quantity" required min=1>
-			<div class="invalid-feedback">إدخل الكمية من فضلك</div>
+			<div class="invalid-feedback" id = 'invalids'></div>
 		</div>
 		<div class="col-2 mt-2">
 			<label for="price" class="form-label">السعر</label>
@@ -87,10 +89,6 @@
 	<?php
 		/* End bocking Page */
 		include $tpl . 'footer.php';
-	?>
-	<script src="<?php echo $controller ?>settings/sales.js"></script>
-	<?php
-		include $tpl . 'footerClose.php';
 	// }
 	// else{
 	// 	header('Location:../../index.php');

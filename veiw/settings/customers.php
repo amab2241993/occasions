@@ -2,17 +2,17 @@
 	ob_start(); // Output Buffering Start
 	session_start();
 	// if (isset($_SESSION['user_name'])) {
-		$pageTitle = 'offices';
-		$getH3     = "المكاتب";
+		$pageTitle = 'customers';
+		$getH3     = "إدارة العملاء";
 		include '../../init.php';
-		?><script src="<?php echo $controller ?>settings/offices.js"></script><?php
+		?><script src="<?php echo $controller ?>settings/customers.js"></script><?php
 		include $tpl . 'navbar.php';
-		$stmt = $con->prepare("SELECT * FROM customers WHERE status = 2 ORDER BY id ASC");
+		$stmt = $con->prepare("SELECT * FROM customers WHERE status = 1 ORDER BY id ASC");
 		$stmt->execute();
 		$customers = $stmt->fetchAll();
 		/* Start Dashboard Page */
 	?>
-	<form class="row needs-validation" id="offices" novalidate>
+	<form class="row needs-validation" id="customers" novalidate>
 		<div class="col-3 mb-3">
 			<label for="name">اسم الزميل</label>
 			<input type="text" class="form-control" placeholder="اسم المستخدم" required id="name">
@@ -24,7 +24,14 @@
 			<label for="phone">رقم الهاتف</label>
 			<input type="text" class="form-control" placeholder="اكتب رقم الهاتف" required  id="phone">
 			<div class="invalid-feedback">
-				أدخل اسم المستخدم كامل من فضلك
+				أدخل رقم الهاتف من فضلك
+			</div>
+		</div>
+		<div class="col-3 mb-3">
+			<label for="address">العنوان</label>
+			<input type="text" class="form-control" placeholder="اكتب العنوان" required  id="address">
+			<div class="invalid-feedback">
+				أدخل العنوان من فضلك
 			</div>
 		</div>
 		<div class="col-1 mb-1">
@@ -37,6 +44,7 @@
 			<tr>
 				<th scope="col-1">#</th>
 				<th scope="col-2">اسم المكتب</th>
+				<th scope="col-2">العنوان</th>
 				<th scope="col-2">الهاتف</th>
 				<th scope="col-2">تحكم</th>
 			</tr>
@@ -50,8 +58,9 @@
 					<tr customer="<?=$customer['name']?>" phone="<?=$customer['phone']?>">
 						<td scope="row"><?=++$count?></td>
 						<td><?= $customer['name']; ?></td>
+						<td><?= $customer['address']; ?></td>
 						<td><?= $customer['phone']; ?></td>
-						<td class="col-2" style="font-size:20px">
+						<td class="col-2" style="font-size:20px" address="<?=$customer['address']?>">
 							<i class='fa fa-edit edit pl-2' id="<?=$customer['id']?>"></i>
 							<i class='fa fa-remove remove pl-2' id="<?=$customer['id']?>"></i>
 						</td>
@@ -89,7 +98,14 @@
 							<label for="customerPhone">اكتب رقم الهاتف</label>
 							<input type="text" class="form-control" required  id="customerPhone">
 							<div class="invalid-feedback">
-								أدخل اسم المستخدم كامل من فضلك
+								أدخل رقم الهاتف من فضلك
+							</div>
+						</div>
+						<div class="col-10 mt-2">
+							<label for="customerAddress">اكتب العنوان</label>
+							<input type="text" class="form-control" required  id="customerAddress">
+							<div class="invalid-feedback">
+								أدخل العنوان من فضلك
 							</div>
 						</div>
 						<div class="col-2 mt-2"></div>

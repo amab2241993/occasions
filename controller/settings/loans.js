@@ -53,6 +53,10 @@ $(function () {
             $("#loan").val("")
         }
     })
+    $("#loan").on('change',function(){
+        var next = $("input").eq(0)
+        next.focus()
+    })
     $("body").on("click", 'td[name="delete[]"]', function(){
         var x = $("tbody").children().length
         var index = $('td[name="delete[]"]').index(this)

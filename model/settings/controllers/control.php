@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	header('Content-type: application/json; charset=utf-8');
-	include '../../connect.php';
+	include '../../../connect.php';
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		try {
 			$parent = $_POST['parent'];

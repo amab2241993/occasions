@@ -108,10 +108,26 @@
 					<th scope="col-1">المبلغ</th>
 					<th scope="col-1">المدفوع</th>
 					<th scope="col-1">المتبقي</th>
-					<th scope="col-1">ترحيل</th>
-					<th scope="col-1">عمال</th>
-					<th scope="col-1">زملاء</th>
-					<th scope="col-1">خدمات</th>
+					<th scope="col-1">
+						<a href = "#" style="color:black">
+							ترحيل
+						</a>
+					</th>
+					<th scope="col-1">
+						<a href = "#" style="color:black">
+						عمال
+						</a>
+					</th>
+					<th scope="col-1">
+						<a href = "#" style="color:black">
+						زملاء
+						</a>
+					</th>
+					<th scope="col-1">
+						<a href = "#" style="color:black">
+						خدمات
+						</a>
+					</th>
 					<th scope="col-1">الجملة</th>
 					<th scope="col-1">الارباح</th>
 					<th scope="col-1">الحزنة</th>

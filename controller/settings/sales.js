@@ -1,9 +1,7 @@
 $(function () {
     'use strict'
-    onload = function(){
-        $('table').hide()
-        $('form').eq(1).hide()
-    }
+    $('table').hide()
+    $('form').eq(1).hide()
     $('#stores').on('change' , function(){
         $.ajax({
             type:'post',
@@ -38,26 +36,27 @@ $(function () {
             $("#price").attr({"disabled" : false})
         }
         $("#quantity").attr({"max" : quantity})
+        $("#invalids").text("الكمية أكبر من 0 وأقل من " + (parseInt(quantity) + 1) + " من فضلك")
         $("#quantity").val("")
         $("#price").val("")
         $("#statment").val("")
     })
-    
     $('#sales').submit(function(data){
         data.preventDefault()
         var form = document.getElementById('sales')
         if(form.checkValidity()){
+            $("#invalids").text("الكمية أكبر من 0 من فضلك")
             if ($('input[name="storeId[]"]').length == 0){
                 $('table').show()
                 $('form').eq(1).show()
                 $(
                     `<div class="col-2">
                         <input type="hidden" class="form-control"
-                        name="storeId[]"value="${$('#stores').val()}">
+                        name="storeId[]" value="${$('#stores').val()}">
                     </div>`
                 ).insertBefore("#save")
                 $(
-                    `<div class="col-2">
+                    `<div class="col-2" storeId="${$('#stores').val()}">
                         <input type="hidden" class="form-control"
                         name="itemId[]"value="${$('#item').val()}">
                     </div>`
@@ -98,7 +97,7 @@ $(function () {
             else{
                 var tester = 0
                 $('input[name="itemId[]"]').map(function(){
-                    if(this.value == $('#item').val() && $(this).attr('store') == $('#stores').val()) tester = 1
+                    if(this.value == $('#item').val() && $(this).parent().attr('storeId') == $('#stores').val()) tester = 1
                 })
                 if(tester != 1){
                     $(

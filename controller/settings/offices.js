@@ -20,8 +20,9 @@ $(function () {
                         type:'post',
                         url:'../../model/settings/offices/offices.php',
                         data:{
-                            name  : $('#name').val(),
-                            phone : $('#phone').val(),
+                            name   : $('#name').val(),
+                            phone  : $('#phone').val(),
+                            status : 2
                         }
                     }).done(function(){
                         window.location.reload()

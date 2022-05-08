@@ -50,7 +50,6 @@
 	<?php
 		/* End Dashboard Page */
 		include $tpl . 'footer.php';
-		include $tpl . 'footerClose.php';
 	}
 	else{
 		header('Location: ../../index.php');
